@@ -13,25 +13,6 @@ This repository contains documentation for deploying LeapfrogAI, an AI-as-a-serv
 - [Zarf](#zarf)
 - [Assumptions](#assumptions)
 - [Instructions](#instructions)
-    - [0. Switch to Sudo](#0-switch-to-sudo)
-    - [1. Install Tools](#1-install-tools)
-    - [2. Create Zarf Packages](#2-create-zarf-packages)
-        - [K3d](#k3d)
-        - [DUBBD](#dubbd)
-        - [LeapfrogAI](#leapfrogai)
-        - [Whisper Model [Optional]](#whisper-model)
-        - [CTransformers](#ctransformers)
-        - [Leapfrog Transcribe [Optional]](#leapfrog-transcribe)
-    - [3. Install Zarf Packages](#3-install-zarf-packages)
-        - [Setup the K3d Cluster](#setup-the-k3d-cluster)
-        - [Deploy DUBBD](#deploy-dubbd)
-        - [LeapfrogAI](#leapfrogai)
-        - [Whisper Model [Optional]](#whisper-model)
-        - [CTransformers](#ctransformers)
-        - [Leapfrog Transcribe [Optional]](#leapfrog-transcribe)
-        - [4. Setup Access](#4-setup-access)
-        - [5. Test Access](#5-test-access)
-        - [6. Extended API Testing [Optional]](#6-extended-api-testing-optional)
 - [Disclaimers](#disclaimers)
 
 ## Environments
@@ -49,6 +30,7 @@ This repository contains documentation for deploying LeapfrogAI, an AI-as-a-serv
 * 32 logical CPU cores (`AMD Ryzen Threadripper PRO 5955WX`) and ~250 GB of free RAM, 2x `NVIDIA RTX A4000`
 * 64 logical CPU cores (`Intel(R) Xeon(R) Platinum 8358 CPU`) and ~200 GB of free RAM, 1x `NVIDIA RTX A10`
 * 10 logical CPU cores (`Apple M1 Pro`) and ~32 GB of free RAM, 1x `Apple M1 Pro`
+* 32 logical CPU cores (`13th Gen Intel® Core™ i9-13900KF`) and ~190GB of free RAM, 1x `NVIDIA RTX 4090`
 
 ## Preparations
 
@@ -58,11 +40,13 @@ Base
 1. [K3d Air-gap Zarf Package](https://github.com/defenseunicorns/zarf-package-k3d-airgap)
 2. [UDS' DUBBD K3d Software Factory Package](https://github.com/defenseunicorns/uds-package-dubbd/tree/main/k3d)
 3. [LeapfrogAI Python API](https://github.com/defenseunicorns/leapfrogai-api)
-4. [LeapfrogAI CTransformers Backend, wrapping The Bloke's Quantized Synthia-7b (Q4, K, M GGUF)](https://github.com/defenseunicorns/leapfrogai-backend-ctransformers)
 
 Transcription
 1. [LeapfrogAI Whisper Backend, faster-whisper and whisper-base](https://github.com/defenseunicorns/leapfrogai-backend-whisper)
 2. [Leapfrog Transcribe](https://github.com/defenseunicorns/doug-translate)
+
+Summarization
+1. [LeapfrogAI CTransformers Backend, wrapping The Bloke's Quantized Synthia-7b (Q4, K, M GGUF)](https://github.com/defenseunicorns/leapfrogai-backend-ctransformers)
 
 ### Tools
 
@@ -96,7 +80,7 @@ The following assumptions are being made for the writing of these installation s
     - Commands may need to be modified based on specific distribution
     - Commands were executed in an Ubuntu 22.04 LTS bash terminal
 - User has a machine with at least the following minimum specifications:
-    - CPU with at least 6 cores @ 2.70 GHz
+    - CPU with at least 4 cores @ 3.00 GHz
     - RAM with at least 32 GB free memory
     - Storage with at least 128 GB free space
     - Minimum base software: `apt update && apt install build-essential iptables git procps jq docker.io -y`
@@ -120,15 +104,13 @@ docker build -t "ghcr.io/defenseunicorns/leapfrogai/<NAME_OF_PACKAGE>:<DESIRED_T
 zarf package create zarf-package-<NAME_OF_PACKAGE>-*.tar.zst
 ```
 
-_Note 5:_ It may be in your best interest to perform the steps in "Note 4", as the main branches of all the LeapfrogAI branches are usually more bug-free and feature complete than our releases (we are in our infancy).
-
-### 0. Switch to Sudo
+### 1. Switch to Sudo
 
 ```bash
 sudo su # login as required
 ```
 
-### 1. Install Tools
+### 2. Install Tools
 
 For each of these commands, be in the `tools/` directory.
 
@@ -179,7 +161,7 @@ install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 kubectl version
 ```
 
-### 2. Create Zarf Packages
+### 3. Create Zarf Packages
 
 #### K3d
 
@@ -254,7 +236,7 @@ cd doug-translate
 zarf package create --confirm
 ```
 
-### 3. Install Zarf Packages
+### 4. Install Zarf Packages
 
 For each of these commands, be in the `zarf-packages/` directory.
 
@@ -322,7 +304,7 @@ zarf package deploy zarf-package-doug-translate-amd64-0.0.1.tar.zst
 # for "SUMMARIZATION_MODEL" prompt, press enter
 ```
 
-#### 4. Setup Access
+#### 5. Setup Access
 
 ```bash
 k3d cluster edit zarf-k3d --port-add "443:30535@loadbalancer"
@@ -331,25 +313,28 @@ k3d cluster edit zarf-k3d --port-add "443:30535@loadbalancer"
 k3d cluster start zarf-k3d
 ```
 
-#### 5. Test Access
+#### 6. Test Access
 
-Go to https://localhost:8083 to hit the Leapfrog Transcribe frontend web application.
+Go to https://localhost:8083 to hit the Leapfrog Transcribe frontend web application, and run the Transcription and Summarization workflow with your own audio or video files.
 
 #### 6. Extended API Testing [Optional]
+
+First, you need to port-forward the API from within the cluster to an `<API PORT>` of choice using `zarf tools monitor`. After that, you can run the following example cURL request:
 
 ```
 curl --insecure -L -X "POST" -H "Accept: application/json" -H "Authorization: Bearer stuff" -d
 '{"model":"ctransformers","prompt":"Give me the name of the US president that served in
 2018.","temperature":1.0,"max_tokens":1024}'
-http://localhost:<api-port>/openai/v1/completions
+http://localhost:<API PORT>/openai/v1/completions
 ```
 
 ## Disclaimers
 
 Transcription & Summarization
-- It cannot gracefully (slow or clashing request handling) handle concurrent users, so 1 user at a time is recommended if no replica sets are created
-- Transcription and summarization workflow for a dense, 1-hour audio takes anywhere between 10-20 minutes depending on CPU and RAM
-- Transcription and summarization accuracy worsens for audio longer than 30 minutes on whisper-base
+- Summarization cannot gracefully (slow or clashing request handling) handle concurrent users, so 1 user at a time is recommended if no replica sets are created
+- Transcription can handle concurrent users, but it may slow down all users if the CPU RAM is being maxed out
+- Transcription and summarization workflow for a dense, 3-hour audio takes anywhere between 15-30 minutes depending on CPU and RAM
+- Workflow accuracy worsens for audio longer than 30 minutes on whisper-base
     - Transcription accuracy is around 97% for audio between 5-20 minutes, and goes down to 70-95% for audio shorter or longer than 5-20 minutes
     - See the following for some transcription benchmarking details: https://github.com/defenseunicorns/whisper-benchmarking
     - Summarization has not been benchmarked, and the batching/concatenation method is experimental
