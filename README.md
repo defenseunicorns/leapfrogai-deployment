@@ -171,7 +171,6 @@ git clone https://github.com/defenseunicorns/zarf-package-k3d-airgap.git
 cd zarf-package-k3d-airgap
 
 # install
-mkdir temp && cd temp
 zarf package create --confirm
 
 cd ../
