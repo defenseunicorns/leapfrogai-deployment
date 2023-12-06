@@ -13,6 +13,26 @@ This repository contains documentation for deploying LeapfrogAI, an AI-as-a-serv
 - [Zarf](#zarf)
 - [Assumptions](#assumptions)
 - [Instructions](#instructions)
+    - [0. Switch to Sudo](#0-switch-to-sudo)
+    - [1. Install Tools](#1-install-tools)
+    - [2. Create Zarf Packages](#2-create-zarf-packages)
+        - [K3d](#k3d)
+        - [DUBBD](#dubbd)
+        - [LeapfrogAI](#leapfrogai)
+        - [Whisper Model [Optional]](#whisper-model)
+        - [CTransformers](#ctransformers)
+        - [Leapfrog Transcribe [Optional]](#leapfrog-transcribe)
+    - [3. Install Zarf Packages](#3-install-zarf-packages)
+        - [Setup the K3d Cluster](#setup-the-k3d-cluster)
+        - [Deploy DUBBD](#deploy-dubbd)
+        - [LeapfrogAI](#leapfrogai)
+        - [Whisper Model [Optional]](#whisper-model)
+        - [CTransformers](#ctransformers)
+        - [Leapfrog Transcribe [Optional]](#leapfrog-transcribe)
+        - [4. Setup Access](#4-setup-access)
+        - [5. Test Access](#5-test-access)
+        - [6. Extended API Testing [Optional]](#6-extended-api-testing-optional)
+- [Troubleshooting](#troubleshooting)
 - [Disclaimers](#disclaimers)
 
 ## Environments
@@ -325,6 +345,16 @@ curl --insecure -L -X "POST" -H "Accept: application/json" -H "Authorization: Be
 '{"model":"ctransformers","prompt":"Give me the name of the US president that served in
 2018.","temperature":1.0,"max_tokens":1024}'
 http://localhost:<API PORT>/openai/v1/completions
+```
+
+## Troubleshooting
+
+#### After performing a restart or restarting the docker service, the cluster cannot be connected with.
+```bash 
+k3d cluster list
+# verify that the cluster has `LOADBALANCER` set to true
+k3d cluster stop <cluster-name>
+k3d cluster start <cluster-name>
 ```
 
 ## Disclaimers
