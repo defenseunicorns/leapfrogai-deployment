@@ -256,12 +256,14 @@ cd doug-translate
 zarf package create --confirm
 ```
 
-### 4. Install Zarf Packages
-
-For each of these commands, be in the `zarf-packages/` directory.
-
+#### Leapfrog UI
 ```bash
-cd zarf-packages
+# download
+git clone https://github.com/defenseunicorns/leapfrog-ui.git
+cd doug-translate
+
+# create
+zarf package create --confirm
 ```
 
 #### Setup the K3d Cluster
@@ -320,7 +322,7 @@ cd doug-translate
 zarf package deploy zarf-package-doug-translate-*.tar.zst
 # press "y" for prompt on deployment confirmation
 # for "LEAPFROGAI_BASE_URL" prompt, press enter
-# for "DOMAIN" prompt type "localhost:8083"
+# for "DOMAIN" prompt type your user facing url in this format "localhost:3000"
 # for "SUMMARIZATION_MODEL" prompt, press enter
 ```
 
@@ -331,9 +333,7 @@ zarf package deploy zarf-package-doug-translate-*.tar.zst
 cd leapfrog-ui
 zarf package deploy zarf-package-leapfrog-ui-*.tar.zst --set
 # press "y" for prompt on deployment confirmation
-# for "LEAPFROGAI_BASE_URL" prompt, press enter
-# for "DOMAIN" prompt type "localhost:8083"
-# for "SUMMARIZATION_MODEL" prompt, press enter
+# for "DOMAIN" prompt type your user facing url in this format "https://localhost:3000"
 ```
 
 #### 5. Setup Access
