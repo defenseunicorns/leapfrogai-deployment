@@ -22,16 +22,18 @@ This repository contains documentation for deploying LeapfrogAI, an AI-as-a-serv
         - [Whisper Model [Optional]](#whisper-model)
         - [CTransformers](#ctransformers)
         - [Leapfrog Transcribe [Optional]](#leapfrog-transcribe)
+        - [Leapfrog UI [Optional]](#leapfrog-ui)
     - [3. Install Zarf Packages](#3-install-zarf-packages)
         - [Setup the K3d Cluster](#setup-the-k3d-cluster)
-        - [Deploy DUBBD](#deploy-dubbd)
-        - [LeapfrogAI](#leapfrogai)
-        - [Whisper Model [Optional]](#whisper-model)
-        - [CTransformers](#ctransformers)
-        - [Leapfrog Transcribe [Optional]](#leapfrog-transcribe)
-        - [4. Setup Access](#4-setup-access)
-        - [5. Test Access](#5-test-access)
-        - [6. Extended API Testing [Optional]](#6-extended-api-testing-optional)
+        - [DUBBD](#deploy-dubbd)
+        - [LeapfrogAI](#deploy-leapfrogai)
+        - [Whisper Model [Optional]](#deploy-whisper-model)
+        - [CTransformers](#deploy-ctransformers)
+        - [Leapfrog Transcribe [Optional]](#deploy-leapfrog-transcribe)
+        - [Leapfrog UI [Optional]](#deploy-leapfrog-ui)
+    - [4. Setup Access](#4-setup-access)
+    - [5. Test Access](#5-test-access)
+    - [6. Extended API Testing [Optional]](#6-extended-api-testing-optional)
 - [Troubleshooting](#troubleshooting)
 - [Disclaimers](#disclaimers)
 
@@ -193,7 +195,6 @@ cd zarf-package-k3d-airgap
 # install
 zarf package create --confirm
 
-cd ../
 zarf tools download-init
 
 cd metallb
@@ -255,19 +256,21 @@ cd doug-translate
 zarf package create --confirm
 ```
 
-### 4. Install Zarf Packages
-
-For each of these commands, be in the `zarf-packages/` directory.
-
+#### Leapfrog UI
 ```bash
-cd zarf-packages
+# download
+git clone https://github.com/defenseunicorns/leapfrog-ui.git
+cd doug-translate
+
+# create
+zarf package create --confirm
 ```
 
 #### Setup the K3d Cluster
 
 ```bash
 cd zarf-package-k3d-airgap/temp
-zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=false zarf-package-k3d-airgap-amd64-5.5.2.tar.zst
+zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=false ../zarf-package-k3d-airgap-amd64-5.5.2.tar.zst
 
 cd ../
 zarf init --components git-server --confirm
@@ -284,7 +287,7 @@ cd uds-package-dubbd/k3d/
 zarf package deploy --confirm zarf-package-k3d-local-*.tar.zst
 ```
 
-#### LeapfrogAI
+#### Deploy LeapfrogAI
 
 ```bash
 cd leapfrogai-api/
@@ -295,7 +298,7 @@ zarf package deploy zarf-package-leapfrogai-api-*.zst
 # press "y" for prompt to create and expose new gateway for load balancer access
 ```
 
-#### Whisper Model
+#### Deploy Whisper Model
 
 ```bash
 # install
@@ -303,7 +306,7 @@ cd leapfrogai-backend-whisper # into leapfrogai-backend-whisper folder
 zarf package deploy zarf-package-whisper-*.tar.zst --confirm
 ```
 
-#### CTransformers
+#### Deploy CTransformers
 
 ```bash
 # install
@@ -311,16 +314,26 @@ cd leapfrogai-backend-ctransformers
 zarf package deploy zarf-package-ctransformers-*.tar.zst --confirm
 ```
 
-#### Leapfrog Transcribe
+#### Deploy Leapfrog Transcribe
 
 ```bash
 # install
 cd doug-translate
-zarf package deploy zarf-package-doug-translate-amd64-0.0.1.tar.zst
+zarf package deploy zarf-package-doug-translate-*.tar.zst
 # press "y" for prompt on deployment confirmation
 # for "LEAPFROGAI_BASE_URL" prompt, press enter
-# for "DOMAIN" prompt type "localhost:8083"
+# for "DOMAIN" prompt type your user facing url in this format "localhost:3000"
 # for "SUMMARIZATION_MODEL" prompt, press enter
+```
+
+#### Deploy Leapfrog UI
+
+```bash
+# install
+cd leapfrog-ui
+zarf package deploy zarf-package-leapfrog-ui-*.tar.zst --set
+# press "y" for prompt on deployment confirmation
+# for "DOMAIN" prompt type your user facing url in this format "https://localhost:3000"
 ```
 
 #### 5. Setup Access
