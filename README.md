@@ -1,6 +1,6 @@
 # LeapfrogAI Deployment Guide
 
-This repository contains documentation for deploying LeapfrogAI, an AI-as-a-service (AaaS) platform that brings the capabilities of AI models to egress-limited environments. LeapfrogAI allows teams to deploy APIs that mirror OpenAI's spec, enabling them to use tools built around OpenAI's API with any model and modalities on the market, all while staying in their own environment and protecting of sensitive data.
+This repository contains documentation for deploying LeapfrogAI, an AI-as-a-service (AaaS) platform that brings the capabilities of AI models to egress-limited environments. LeapfrogAI allows teams to deploy APIs that mirror OpenAI's spec, enabling them to use tools built around OpenAI's API with any model and modalities on the market, all while staying in their own environment and protecting sensitive data.
 
 Visit https://github.com/defenseunicorns/leapfrogai for more details.
 
