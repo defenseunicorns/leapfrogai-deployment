@@ -357,7 +357,7 @@ zarf package deploy zarf-package-ctransformers-*.tar.zst --confirm
 ```bash
 # install
 cd doug-translate
-zarf package deploy zarf-package-doug-translate-*.tar.zst
+zarf package deploy zarf-package-doug-translate-*.tar.zst --set DOMAIN=localhost:8080 --confirm
 # press "y" for prompt on deployment confirmation
 # for "LEAPFROGAI_BASE_URL" prompt, press enter
 # for "DOMAIN" prompt type your user facing url in this format "localhost:8080"
@@ -369,7 +369,7 @@ zarf package deploy zarf-package-doug-translate-*.tar.zst
 ```bash
 # install
 cd leapfrog-ui
-zarf package deploy zarf-package-leapfrog-ui-*.tar.zst --set
+zarf package deploy zarf-package-leapfrog-ui-*.tar.zst --set DOMAIN=https://localhost:8080 --confirm
 # press "y" for prompt on deployment confirmation
 # press enter for all prompts except the following
 # for "DOMAIN" prompt type your user facing url in this format "https://localhost:8080"
