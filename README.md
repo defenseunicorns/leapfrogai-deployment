@@ -270,7 +270,7 @@ zarf package create --confirm
 
 ```bash
 cd zarf-package-k3d-airgap/temp
-zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=false ../zarf-package-k3d-airgap-amd64-5.5.2.tar.zst
+zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=false ../zarf-package-k3d-airgap-amd64-*.tar.zst
 
 cd ../
 zarf init --components git-server --confirm
@@ -319,10 +319,10 @@ zarf package deploy zarf-package-ctransformers-*.tar.zst --confirm
 ```bash
 # install
 cd doug-translate
-zarf package deploy zarf-package-doug-translate-*.tar.zst
+zarf package deploy zarf-package-doug-translate-*.tar.zst --set DOMAIN=localhost:8080 --confirm
 # press "y" for prompt on deployment confirmation
 # for "LEAPFROGAI_BASE_URL" prompt, press enter
-# for "DOMAIN" prompt type your user facing url in this format "localhost:3000"
+# for "DOMAIN" prompt type your user facing url in this format "localhost:8080"
 # for "SUMMARIZATION_MODEL" prompt, press enter
 ```
 
@@ -331,15 +331,15 @@ zarf package deploy zarf-package-doug-translate-*.tar.zst
 ```bash
 # install
 cd leapfrog-ui
-zarf package deploy zarf-package-leapfrog-ui-*.tar.zst --set
+zarf package deploy zarf-package-leapfrog-ui-*.tar.zst --set DOMAIN=https://localhost:8080 --confirm
 # press "y" for prompt on deployment confirmation
-# for "DOMAIN" prompt type your user facing url in this format "https://localhost:3000"
+# for "DOMAIN" type your user facing url in this format "https://localhost:8080"
 ```
 
 #### 5. Setup Access
 
 ```bash
-k3d cluster edit zarf-k3d --port-add "443:30535@loadbalancer"
+k3d cluster edit zarf-k3d --port-add "443:30535@loadbalancer" --port-add "8080:32386@loadbalancer"
 
 # If the load balancer does not restart
 k3d cluster start zarf-k3d
