@@ -84,7 +84,7 @@ These sub-stacks are not ready or not released yet.
 3. GPU: [CTransformers Backend](https://github.com/defenseunicorns/leapfrogai-backend-ctransformers)
 4. Embeddings, CPU, GPU: [Instructor XL Backend](https://github.com/defenseunicorns/leapfrogai-backend-instructor-xl)
 5. Inference, CPU, GPU: [VLLM Backend](https://github.com/defenseunicorns/leapfrogai-backend-vllm)
-6. Vector Database: [ChromaDB Operator](N/A)
+6. Vector Database: [Vector DB Operator](N/A)
 
 ### Required Tools
 
@@ -230,7 +230,7 @@ cd metallb
 zarf package create --confirm
 ```
 
-#### DUBBD
+#### UDS DUBBD
 
 ```bash
 # download
@@ -242,7 +242,7 @@ docker login registry1.dso.mil # account creation is required
 zarf package create --confirm
 ```
 
-#### LeapfrogAI
+#### LeapfrogAI API
 
 ```bash
 # download
@@ -282,6 +282,9 @@ zarf package create --confirm
 git clone https://github.com/defenseunicorns/doug-translate.git
 cd doug-translate
 
+# docker build image
+docker build . -t ghcr.io/defenseunicorns/doug-translate:0.1.0
+
 # create
 zarf package create --confirm
 ```
@@ -292,6 +295,9 @@ zarf package create --confirm
 # download
 git clone https://github.com/defenseunicorns/leapfrog-ui.git
 cd doug-translate
+
+# docker build image
+docker build . -t ghcr.io/defenseunicorns/leapfrogai/leapfrog-ui:0.0.1
 
 # create
 zarf package create --confirm
@@ -354,7 +360,7 @@ cd doug-translate
 zarf package deploy zarf-package-doug-translate-*.tar.zst
 # press "y" for prompt on deployment confirmation
 # for "LEAPFROGAI_BASE_URL" prompt, press enter
-# for "DOMAIN" prompt type your user facing url in this format "localhost:3000"
+# for "DOMAIN" prompt type your user facing url in this format "localhost:8080"
 # for "SUMMARIZATION_MODEL" prompt, press enter
 ```
 
@@ -365,18 +371,17 @@ zarf package deploy zarf-package-doug-translate-*.tar.zst
 cd leapfrog-ui
 zarf package deploy zarf-package-leapfrog-ui-*.tar.zst --set
 # press "y" for prompt on deployment confirmation
-# press enter for all prompts except the following two
-# for "DOMAIN" prompt type your user facing url in this format "https://localhost:3000<PREFIX>"
-#    where <PREFIX> is what you enter at the last prompt
-# for "PREFIX" prompt, type the endpoint in this format "/chat"
+# press enter for all prompts except the following
+# for "DOMAIN" prompt type your user facing url in this format "https://localhost:8080"
 ```
 
 #### Setup Access
 
 ```bash
 k3d cluster edit zarf-k3d --port-add "443:30535@loadbalancer"
+k3d cluster edit zarf-k3d --port-add "8080:30535@loadbalancer"
 
-# If the load balancer does not restart
+# if the load balancer does not restart
 k3d cluster start zarf-k3d
 ```
 
