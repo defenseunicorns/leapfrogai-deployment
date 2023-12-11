@@ -1,83 +1,107 @@
 # LeapfrogAI Deployment Guide
 
-This repository contains documentation for deploying LeapfrogAI, an AI-as-a-service (AaaS) platform that brings the capabilities of AI models to egress-limited environments. LeapfrogAI allows teams to deploy APIs that mirror OpenAI's spec, enabling them to use tools built around OpenAI's models in their own environment without the need to release sensitive data to SaaS tools.
+This repository contains documentation for deploying LeapfrogAI, an AI-as-a-service (AaaS) platform that brings the capabilities of AI models to egress-limited environments. LeapfrogAI allows teams to deploy APIs that mirror OpenAI's spec, enabling them to use tools built around OpenAI's API with any model and modalities on the market, all while staying in their own environment and protecting of sensitive data.
+
+Visit https://github.com/defenseunicorns/leapfrogai for more details.
+
+## Quickstart
+
+Want to skip directly to a super-simplified Docker deployment using `docker compose`? Go to the following repository and get started in as few as 3 commands!
+
+https://github.com/defenseunicorns/tadpole
 
 ## Table of Contents
+
 - [Environments](#environments)
-    - [Tested Operating System](#tested-operating-system)
-    - [Tested Hardware](#tested-hardware)
+  - [Tested Operating System](#tested-operating-system)
+  - [Tested Hardware](#tested-hardware)
 - [Preparations](#preparations)
-    - [Stack](#stack)
-    - [Tools](#tools)
+  - [Required Tools](#tools)
+  - [LeapfrogAI Stack](#stack)
 - [Installation](#installation)
 - [Zarf](#zarf)
 - [Assumptions](#assumptions)
 - [Instructions](#instructions)
-    - [0. Switch to Sudo](#0-switch-to-sudo)
-    - [1. Install Tools](#1-install-tools)
-    - [2. Create Zarf Packages](#2-create-zarf-packages)
-        - [K3d](#k3d)
-        - [DUBBD](#dubbd)
-        - [LeapfrogAI](#leapfrogai)
-        - [Whisper Model [Optional]](#whisper-model)
-        - [CTransformers](#ctransformers)
-        - [Leapfrog Transcribe [Optional]](#leapfrog-transcribe)
-        - [Leapfrog UI [Optional]](#leapfrog-ui)
-    - [3. Install Zarf Packages](#3-install-zarf-packages)
-        - [Setup the K3d Cluster](#setup-the-k3d-cluster)
-        - [DUBBD](#deploy-dubbd)
-        - [LeapfrogAI](#deploy-leapfrogai)
-        - [Whisper Model [Optional]](#deploy-whisper-model)
-        - [CTransformers](#deploy-ctransformers)
-        - [Leapfrog Transcribe [Optional]](#deploy-leapfrog-transcribe)
-        - [Leapfrog UI [Optional]](#deploy-leapfrog-ui)
-    - [4. Setup Access](#4-setup-access)
-    - [5. Test Access](#5-test-access)
-    - [6. Extended API Testing [Optional]](#6-extended-api-testing-optional)
+  - [Switch to Sudo](#switch-to-sudo)
+  - [Install Tools](#install-tools)
+  - [Create Zarf Packages](#create-zarf-packages)
+  - [Install Zarf Packages](#install-zarf-packages)
+  - [Setup Access](#setup-access)
 - [Troubleshooting](#troubleshooting)
-- [Disclaimers](#disclaimers)
+- [Issues and Feature Requests](#issues-and-feature-requests)
 
 ## Environments
 
 ### Tested Operating System
 
-* Ubuntu LTS (jammy)
-    * 22.04.5
-    * 22.04.4
-    * 22.04.3
-* MacOS 13.0.1 (Ventura)
+- Ubuntu LTS (jammy)
+  - 22.04.5
+  - 22.04.4
+  - 22.04.3
+- MacOS 13.0.1 (Ventura)
 
 ### Tested Hardware
-* 64 logical CPU cores (?) and ~250 GB of free RAM, distributed, no gpu
-* 32 logical CPU cores (`AMD Ryzen Threadripper PRO 5955WX`) and ~250 GB of free RAM, 2x `NVIDIA RTX A4000`
-* 64 logical CPU cores (`Intel(R) Xeon(R) Platinum 8358 CPU`) and ~200 GB of free RAM, 1x `NVIDIA RTX A10`
-* 10 logical CPU cores (`Apple M1 Pro`) and ~32 GB of free RAM, 1x `Apple M1 Pro`
-* 32 logical CPU cores (`13th Gen Intel® Core™ i9-13900KF`) and ~190GB of free RAM, 1x `NVIDIA RTX 4090`
+
+- 64 logical CPU cores (`Distributed Compute via Ubuntu Virtual Machine`) and ~250 GB of free RAM, no GPU
+- 32 logical CPU cores (`AMD Ryzen Threadripper PRO 5955WX`) and ~250 GB of free RAM, 2x `NVIDIA RTX A4000`
+- 64 logical CPU cores (`Intel(R) Xeon(R) Platinum 8358 CPU`) and ~200 GB of free RAM, 1x `NVIDIA RTX A10`
+- 10 logical CPU cores (`Apple M1 Pro`) and ~32 GB of free RAM, 1x `Apple M1 Pro`
+- 32 logical CPU cores (`13th Gen Intel® Core™ i9-13900KF`) and ~190GB of free RAM, 1x `NVIDIA RTX 4090`
 
 ## Preparations
 
-### Stack
+### LeapfrogAI Stack
 
-Base
-1. [K3d Air-gap Zarf Package](https://github.com/defenseunicorns/zarf-package-k3d-airgap)
-2. [UDS' DUBBD K3d Software Factory Package](https://github.com/defenseunicorns/uds-package-dubbd/tree/main/k3d)
-3. [LeapfrogAI Python API](https://github.com/defenseunicorns/leapfrogai-api)
+#### Required Base
 
-Transcription
-1. [LeapfrogAI Whisper Backend, faster-whisper and whisper-base](https://github.com/defenseunicorns/leapfrogai-backend-whisper)
-2. [Leapfrog Transcribe](https://github.com/defenseunicorns/doug-translate)
+These layers are required for all deployments, K8s, Docker, or Host and Development:
 
-Summarization
-1. [LeapfrogAI CTransformers Backend, wrapping The Bloke's Quantized Synthia-7b (Q4, K, M GGUF)](https://github.com/defenseunicorns/leapfrogai-backend-ctransformers)
+1. [LeapfrogAI API](https://github.com/defenseunicorns/leapfrogai-api)
+2. [LeapfrogAI Python SDK](https://github.com/defenseunicorns/leapfrogai-sdk)
 
-### Tools
+These layers are only required for K8s deployments:
 
-1. jq
-2. docker
-3. k3d
-4. kubectl
-5. zarf
+2. [K3d Air-gap Zarf Package](https://github.com/defenseunicorns/zarf-package-k3d-airgap)
+3. [UDS' DUBBD K3d Software Factory Package](https://github.com/defenseunicorns/uds-package-dubbd)
 
+#### Optional Sub-Stacks
+
+_NOTE_: "Inference" refers to most LLM interactions, like chat or RAG. Inferencing options depend on the other sub-stacks being deployed, and the modalities and expertise of the LLM being deployed using the selected backend(s).
+
+These are sub-stacks that can be added on top and rely on the LeapfrogAI API and SDK components.
+
+1. Transcription, CPU: [Whisper Backend](https://github.com/defenseunicorns/leapfrogai-backend-whisper)
+2. Inference CPU, CPU: [CTransformers Backend](https://github.com/defenseunicorns/leapfrogai-backend-ctransformers)
+3. Transcription, Summarization: [Leapfrog Transcribe](https://github.com/defenseunicorns/doug-translate)
+4. Inference: [Leapfrog UI](https://github.com/defenseunicorns/leapfrog-ui)
+
+#### Upcoming Releases
+
+These sub-stacks are not ready or not released yet.
+
+1. Chat, Summarization, RAG, CPU, GPU: [Llama CPP Python Backend](https://github.com/defenseunicorns/leapfrogai-backend-llama-cpp-python)
+2. Translation, GPU: [Whisper Backend](https://github.com/defenseunicorns/leapfrogai-backend-whisper)
+3. GPU: [CTransformers Backend](https://github.com/defenseunicorns/leapfrogai-backend-ctransformers)
+4. Embeddings, CPU, GPU: [Instructor XL Backend](https://github.com/defenseunicorns/leapfrogai-backend-instructor-xl)
+5. Inference, CPU, GPU: [VLLM Backend](https://github.com/defenseunicorns/leapfrogai-backend-vllm)
+6. Vector Database: [ChromaDB Operator](N/A)
+
+### Required Tools
+
+These should already be on your environment from the start:
+
+- jq
+- docker
+- build-essential
+- iptables
+- git
+- procps
+
+These will be brought in and installed using Zarf, as binaries, and/or through a remote repository:
+
+- k3d
+- kubectl
+- zarf
 
 ## Installation
 
@@ -89,56 +113,61 @@ Deploying or updating things inside a Kubernetes cluster with Zarf is as easy as
 
 ```bash
 zarf package create --confirm
-zarf package deploy --confirm
+zarf package deploy <PACKAGE_TAR_FILE> --confirm
 ```
 
-See https://zarf.dev/ for more details.
+Visit https://zarf.dev/ for more details.
 
 ## Assumptions
 
 The following assumptions are being made for the writing of these installation steps:
 
 - User has a standard Unix-based operating system installed, with `sudo` access
-    - Commands may need to be modified based on specific distribution
-    - Commands were executed in an Ubuntu 22.04 LTS bash terminal
+  - Commands may need to be modified based on specific distribution
+  - Commands were executed in an Ubuntu 22.04 LTS bash terminal
 - User has a machine with at least the following minimum specifications:
-    - CPU with at least 4 cores @ 3.00 GHz
-    - RAM with at least 32 GB free memory
-    - Storage with at least 128 GB free space
-    - Minimum base software: `apt update && apt install build-essential iptables git procps jq docker.io -y`
+  - CPU with at least 4 cores @ 3.00 GHz
+  - RAM with at least 32 GB free memory
+  - Storage with at least 128 GB free space
+- If using GPU(s), user has a NVIDIA GPU with updated drivers and CUDA toolkit 11.8.x installed
+  - VRAM of the GPU(s) determines layer offloading
 
 ## Instructions
 
-The following steps and commands must be executed in the order that they are presented, top to bottom. All `cd` commands are done relative to your development environment's root folder. Assume every new step starts at the root folder.
+### Important Notes
 
-_Note 1_: "root folder" means the base directory where you are storing all the project dependencies for this installation.
+1. The following steps and commands must be executed in the order that they are presented within this README, top to bottom.
 
-_Note 2_: 1) "Internet Access" and 2) "Isolated Network" will be noted when the instructions differ between 1) a system that can pull and execute remote dependencies from the internet, and 2) a system that is isolated and cannot reach outside networks or remote repositories.
+2. All `cd` commands are done relative to your development environment's "root folder". Assume every new step starts at the root folder.
 
-_Note 3:_  For all "Isolated Network" installs, `wget`, `git clone` and `zarf package create` commands are assumed to have been done and stored on a removable media device. These commands are under the bash comments `download` and `create`.
+3. "root folder" means the base directory where you are storing all the project dependencies for this installation.
 
-_Note 4:_ For instances where you do not want to download a tagged version of a LeapfrogAI release (e.g., leapfrogai-ctransformers-backend:0.2.0), you can perform the following generic instructions prior to any of the `zarf package create` commands:
+4. "Internet Access" and "Isolated Network" will be noted when the instructions differ between the two. "Internet Access" refers to a system that can pull and execute remote dependencies from the internet; whereas "Isolated Network" refers to a system that is isolated and cannot reach outside networks or remote repositories
+
+5. For all "Isolated Network" installs, `wget`, `git clone` and `zarf package create` commands are assumed to have been completed prior to entering the isolated network. The outputs from these commands should be stored on a removable media device and uploaded to the isolated machine.
+
+6. For instances where you do not want to download a tagged version of a LeapfrogAI or Defense Unicorns release (e.g., leapfrogai-ctransformers-backend:0.2.0), you can tag and modify the pointers to the tag prior to any of the `zarf package create` commands:
 
 ```bash
 docker build -t "ghcr.io/defenseunicorns/leapfrogai/<NAME_OF_PACKAGE>:<DESIRED_TAG>" .
-# do a find and replace on anything matching the official tag
-# example in VSCode for: in the git directory press alt+shift+f, and search 0.2.0 and "replace all" with your DESIRED_TAG
+# do a find and replace on anything matching the official tag (e.g., zarf.yaml, zarf-config.yaml, pyproject.toml, etc.)
+# replace all instances of the old tag with the DESIRED_TAG
 zarf package create zarf-package-<NAME_OF_PACKAGE>-*.tar.zst
 ```
 
-### 1. Switch to Sudo
+7. If using GPU(s), see the `# [GPU VARIATION]` comments for details on setting up the cluster for GPU discovery and offloading
+
+8. This guide shows you how to deploy these sub-stacks in an opinionated manner using K8s and Zarf. Variations from this guide may lead to unintended consequences or deployment failures. To deploy the sub-stacks using just Docker containers or on Host and Development, please go to the sub-stack's repository and follow the README.
+
+### Switch to Sudo
+
+This step isn't necessarily required, as long as your environment already has access to the `sudo` command prefix in general.
 
 ```bash
 sudo su # login as required
 ```
 
-### 2. Install Tools
-
-For each of these commands, be in the `tools/` directory.
-
-```bash
-cd tools
-```
+### Install Tools
 
 #### Zarf
 
@@ -151,10 +180,10 @@ brew install zarf
 _Isolated Network:_
 
 ```bash
-# download
+# download and store on removable media
 wget https://github.com/defenseunicorns/zarf/releases/download/v0.31.0/zarf_v0.31.0_Linux_amd64
 
-# install
+# upload from removable media and install
 mv zarf_v0.31.0_Linux_amd64 /usr/local/bin/zarf
 chmod +x /usr/local/bin/zarf
 
@@ -173,17 +202,17 @@ apt install kubectl
 _Isolated Network:_
 
 ```bash
-# download
+# download and store on removable media
 wget https://dl.k8s.io/release/v1.28.3/bin/linux/amd64/kubectl
 
-# install
+# upload from removable media and install
 install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 # check
 kubectl version
 ```
 
-### 3. Create Zarf Packages
+### Create Zarf Packages
 
 #### K3d
 
@@ -192,7 +221,7 @@ kubectl version
 git clone https://github.com/defenseunicorns/zarf-package-k3d-airgap.git
 cd zarf-package-k3d-airgap
 
-# install
+# create
 zarf package create --confirm
 
 zarf tools download-init
@@ -202,6 +231,7 @@ zarf package create --confirm
 ```
 
 #### DUBBD
+
 ```bash
 # download
 git clone https://github.com/defenseunicorns/uds-package-dubbd.git
@@ -223,7 +253,7 @@ cd leapfrogai-api/
 zarf package create --confirm
 ```
 
-#### Whisper Model
+#### (OPTIONAL) Whisper Model
 
 ```bash
 # download
@@ -234,7 +264,7 @@ cd leapfrogai-backend-whisper # into leapfrogai-backend-whisper folder
 zarf package create --confirm
 ```
 
-#### CTransformers
+#### (OPTIONAL) CTransformers
 
 ```bash
 # download
@@ -245,7 +275,7 @@ cd leapfrogai-backend-ctransformers
 zarf package create --confirm
 ```
 
-#### Leapfrog Transcribe
+#### (OPTIONAL) Leapfrog Transcribe
 
 ```bash
 # download
@@ -256,7 +286,8 @@ cd doug-translate
 zarf package create --confirm
 ```
 
-#### Leapfrog UI
+#### (OPTIONAL) Leapfrog UI
+
 ```bash
 # download
 git clone https://github.com/defenseunicorns/leapfrog-ui.git
@@ -270,13 +301,14 @@ zarf package create --confirm
 
 ```bash
 cd zarf-package-k3d-airgap/temp
-zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=false ../zarf-package-k3d-airgap-amd64-5.5.2.tar.zst
+# [GPU VARIATION] set `enable_gpus=true` for GPU discovery and offloading
+zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=false ../zarf-package-k3d-airgap-*.tar.zst
 
 cd ../
 zarf init --components git-server --confirm
 
 cd metallb
-zarf package deploy --confirm zarf-package-metallb-amd64-v0.13.10.tar.zst
+zarf package deploy --confirm zarf-package-metallb-*.tar.zst
 ```
 
 #### Deploy DUBBD
@@ -284,7 +316,7 @@ zarf package deploy --confirm zarf-package-metallb-amd64-v0.13.10.tar.zst
 ```bash
 # deploy
 cd uds-package-dubbd/k3d/
-zarf package deploy --confirm zarf-package-k3d-local-*.tar.zst
+zarf package deploy --confirm zarf-package-dubbd-k3d-*.tar.zst
 ```
 
 #### Deploy LeapfrogAI
@@ -298,7 +330,7 @@ zarf package deploy zarf-package-leapfrogai-api-*.zst
 # press "y" for prompt to create and expose new gateway for load balancer access
 ```
 
-#### Deploy Whisper Model
+#### (OPTIONAL) Deploy Whisper Model
 
 ```bash
 # install
@@ -306,7 +338,7 @@ cd leapfrogai-backend-whisper # into leapfrogai-backend-whisper folder
 zarf package deploy zarf-package-whisper-*.tar.zst --confirm
 ```
 
-#### Deploy CTransformers
+#### (OPTIONAL) Deploy CTransformers
 
 ```bash
 # install
@@ -314,7 +346,7 @@ cd leapfrogai-backend-ctransformers
 zarf package deploy zarf-package-ctransformers-*.tar.zst --confirm
 ```
 
-#### Deploy Leapfrog Transcribe
+#### (OPTIONAL) Deploy Leapfrog Transcribe
 
 ```bash
 # install
@@ -326,17 +358,20 @@ zarf package deploy zarf-package-doug-translate-*.tar.zst
 # for "SUMMARIZATION_MODEL" prompt, press enter
 ```
 
-#### Deploy Leapfrog UI
+#### (OPTIONAL) Deploy Leapfrog UI
 
 ```bash
 # install
 cd leapfrog-ui
 zarf package deploy zarf-package-leapfrog-ui-*.tar.zst --set
 # press "y" for prompt on deployment confirmation
-# for "DOMAIN" prompt type your user facing url in this format "https://localhost:3000"
+# press enter for all prompts except the following two
+# for "DOMAIN" prompt type your user facing url in this format "https://localhost:3000<PREFIX>"
+#    where <PREFIX> is what you enter at the last prompt
+# for "PREFIX" prompt, type the endpoint in this format "/chat"
 ```
 
-#### 5. Setup Access
+#### Setup Access
 
 ```bash
 k3d cluster edit zarf-k3d --port-add "443:30535@loadbalancer"
@@ -345,38 +380,25 @@ k3d cluster edit zarf-k3d --port-add "443:30535@loadbalancer"
 k3d cluster start zarf-k3d
 ```
 
-#### 6. Test Access
-
 Go to https://localhost:8083 to hit the Leapfrog Transcribe frontend web application, and run the Transcription and Summarization workflow with your own audio or video files.
-
-#### 6. Extended API Testing [Optional]
-
-First, you need to port-forward the API from within the cluster to an `<API PORT>` of choice using `zarf tools monitor`. After that, you can run the following example cURL request:
-
-```
-curl --insecure -L -X "POST" -H "Accept: application/json" -H "Authorization: Bearer stuff" -d
-'{"model":"ctransformers","prompt":"Give me the name of the US president that served in
-2018.","temperature":1.0,"max_tokens":1024}'
-http://localhost:<API PORT>/openai/v1/completions
-```
 
 ## Troubleshooting
 
-#### After performing a restart or restarting the docker service, the cluster cannot be connected with.
-```bash 
+Below are some occasional deployment issues that we have encountered that, and you may too.
+
+### Cluster Connection Issues
+
+After performing a restart or restarting the docker service, the cluster cannot be connected with.
+
+```bash
 k3d cluster list
 # verify that the cluster has `LOADBALANCER` set to true
 k3d cluster stop <cluster-name>
 k3d cluster start <cluster-name>
 ```
 
-## Disclaimers
+## Issues and Feature Requests
 
-Transcription & Summarization
-- Summarization cannot gracefully (slow or clashing request handling) handle concurrent users, so 1 user at a time is recommended if no replica sets are created
-- Transcription can handle concurrent users, but it may slow down all users if the CPU RAM is being maxed out
-- Transcription and summarization workflow for a dense, 3-hour audio takes anywhere between 15-30 minutes depending on CPU and RAM
-- Workflow accuracy worsens for audio longer than 30 minutes on whisper-base
-    - Transcription accuracy is around 97% for audio between 5-20 minutes, and goes down to 70-95% for audio shorter or longer than 5-20 minutes
-    - See the following for some transcription benchmarking details: https://github.com/defenseunicorns/whisper-benchmarking
-    - Summarization has not been benchmarked, and the batching/concatenation method is experimental
+For issues or questions related to this deployment guide, please submit an issue in this repository.
+
+For issues related to any of the components this guide teaches you to deploy, please go to that sub-stack's repository to submit an issue.
