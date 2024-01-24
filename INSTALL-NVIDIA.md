@@ -97,6 +97,10 @@ zarf package deploy zarf-package-*.tar.zst
 # check
 zarf tools kubectl logs -n leapfrogai deployment/gpu-support-test
 # the logs should show that GPU(s) are accessible
+
+# clean-up
+zarf package remove gpu-support-test
+zarf tools registry prune --confirm
 ```
 
 #### UDS DUBBD
