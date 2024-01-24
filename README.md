@@ -294,7 +294,7 @@ zarf package create --confirm
 ```bash
 # download
 git clone https://github.com/defenseunicorns/leapfrog-ui.git
-cd doug-translate
+cd leapfrog-ui
 
 # docker build image
 docker build . -t ghcr.io/defenseunicorns/leapfrogai/leapfrog-ui:0.0.1
