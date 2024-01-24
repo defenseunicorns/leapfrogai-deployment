@@ -27,11 +27,16 @@ Our goal for LeapfrogAI is to also simplify the Kubernetes-based deployment of L
 
 ## Instructions
 
-The instructions are located in the [INSTALL-CPU.md]("./INSTALL-CPU.md") and [INSTALL-GPU.md]("./INSTALL-GPU.md"), where each markdown file contains an a detailed guide on how to install LeapfrogAI on systems that are CPU-only and contain both CPU and GPU, respectively.
+The instructions are located in the [INSTALL-CPU.md]("./INSTALL-CPU.md") and [INSTALL-NVIDIA.md]("./INSTALL-NVIDIA.md"), where each markdown file contains an a detailed guide on how to install LeapfrogAI on systems that are CPU-only and contain both CPU and NVIDIA GPU(s), respectively.
+
+> [!IMPORTANT]  
+> GPU and CPU installation are very similar, so if you are installing with GPU support, bring the INSTALL-CPU.md as well, since all the GPU related instructions only point out the steps that vary from the CPU instructions.
 
 ## Tested Environments
 
 Below are some of the operating systems, architectures, and system specifications that we have tested our deployment instructions on.
+
+In the future, our goal is to add instructions and test compatibility on other environments, e.g., AMD GPU(s), Metal acceleration.
 
 > [!NOTE]  
 > The the speed and quality of LeapfrogAI and its hosted AI models depends heavily on the presence of a strong GPU to offload model layers to.
@@ -52,7 +57,7 @@ Below are some of the operating systems, architectures, and system specification
 - 64 CPU cores (`Intel Xeon Platinum 8358 CPU`) and ~200Gb RAM, 1x `NVIDIA RTX A10` (16Gb vRAM each)
 - 10 CPU cores (`Apple M1 Pro`) and ~32 GB of free RAM, 1x `Apple M1 Pro`
 - 32 CPU cores (`13th Gen Intel Core i9-13900KF`) and ~190GB RAM, 1x `NVIDIA RTX 4090` (24Gb vRAM each)
-- 256 CPU cores (`Unknown Compute via Server`) and ~1.4Tb RAM, 8x `NVIDIA H100` (80Gb vRAM each)
+- 2x 128 CPU cores (`AMD EPYC 9004`) and ~1.4Tb RAM, 8x `NVIDIA H100` (80Gb vRAM each)
 - 32 CPU cores (`13th Gen Intel Core i9-13900HX`) and ~64Gb RAM, 1x `NVIDIA RTX 4070` (8Gb vRAM each)
 
 ### Architectures
