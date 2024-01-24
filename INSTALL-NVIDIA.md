@@ -159,4 +159,4 @@ N/A
 
 ## Troubleshooting
 
-Below are some occasional deployment issues that we have encountered that, and you may too.
+Please visit and read the contents of the [`gpu-support-test` repository](https://github.com/justinthelaw/gpu-support-test?tab=readme-ov-file#gpu-support-test) if you are running into issues regarding GPU access for Docker containers or Kubernetes clusters' pods.
