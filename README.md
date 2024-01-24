@@ -23,6 +23,7 @@ Our goal for LeapfrogAI is to also simplify the Kubernetes-based deployment of L
   - [Operating Systems](#operating-systems)
   - [Hardware](#hardware)
   - [Architectures](#architectures)
+- [Issues and Features](#issues-and-features)
 
 ## Instructions
 
@@ -58,3 +59,7 @@ Below are some of the operating systems, architectures, and system specification
 
 - `linux/amd64`
 - `linux/arm64`
+
+## Issues and Features
+
+If you have issues with installation or if you believe something is missing from the installation guides then please submit an [Issue]().

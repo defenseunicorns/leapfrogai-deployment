@@ -3,61 +3,19 @@
 ## Table of Contents
 
 - [Preparations](#preparations)
-  - [Required Tools](#tools)
-  - [LeapfrogAI Stack](#stack)
+  - [Host Dependencies](#host-dependencies)
+  - [Required Tools](#required-tools)
 - [Installation](#installation)
 - [Zarf](#zarf)
 - [Assumptions](#assumptions)
-- [Instructions](#instructions)
-  - [Switch to Sudo](#switch-to-sudo)
-  - [Install Tools](#install-tools)
-  - [Create Zarf Packages](#create-zarf-packages)
-  - [Install Zarf Packages](#install-zarf-packages)
-  - [Setup Access](#setup-access)
+- [Installation](#installation)
 - [Troubleshooting](#troubleshooting)
-- [Issues and Feature Requests](#issues-and-feature-requests)
 
 ## Environments
 
 ## Preparations
 
-### LeapfrogAI Stack
-
-#### Required Base
-
-These layers are required for all deployments, GPU, CPU, K8s, Docker, or Host and Development:
-
-1. [LeapfrogAI API](https://github.com/defenseunicorns/leapfrogai-api)
-2. [LeapfrogAI Python SDK](https://github.com/defenseunicorns/leapfrogai-sdk)
-
-These layers are only required for K8s deployments:
-
-2. [K3d Air-gap Zarf Package](https://github.com/defenseunicorns/zarf-package-k3d-airgap)
-3. [UDS' DUBBD K3d Software Factory Package](https://github.com/defenseunicorns/uds-package-dubbd)
-
-#### Optional Sub-Stacks
-
-_NOTE_: "Inference" refers to most LLM interactions, like chat or RAG. Inferencing options depend on the other sub-stacks being deployed, and the modalities and expertise of the LLM being deployed using the selected backend(s).
-
-These are sub-stacks that can be added on top and rely on the LeapfrogAI API and SDK components.
-
-1. Transcription, CPU: [Whisper Backend](https://github.com/defenseunicorns/leapfrogai-backend-whisper)
-2. Inference CPU, CPU: [CTransformers Backend](https://github.com/defenseunicorns/leapfrogai-backend-ctransformers)
-3. Transcription, Summarization: [Leapfrog Transcribe](https://github.com/defenseunicorns/doug-translate)
-4. Inference: [Leapfrog UI](https://github.com/defenseunicorns/leapfrog-ui)
-
-#### Upcoming Releases
-
-These sub-stacks are not ready or not released yet.
-
-1. Chat, Summarization, RAG, CPU, GPU: [Llama CPP Python Backend](https://github.com/defenseunicorns/leapfrogai-backend-llama-cpp-python)
-2. Translation, GPU: [Whisper Backend](https://github.com/defenseunicorns/leapfrogai-backend-whisper)
-3. GPU: [CTransformers Backend](https://github.com/defenseunicorns/leapfrogai-backend-ctransformers)
-4. Embeddings, CPU, GPU: [Instructor XL Backend](https://github.com/defenseunicorns/leapfrogai-backend-instructor-xl)
-5. Inference, CPU, GPU: [VLLM Backend](https://github.com/defenseunicorns/leapfrogai-backend-vllm)
-6. Vector Database: [Vector DB Operator](N/A)
-
-### Required Tools
+### Host Dependencies
 
 These should already be on your environment from the start:
 
@@ -68,7 +26,9 @@ These should already be on your environment from the start:
 - git
 - procps
 
-These will be brought in and installed using Zarf, as binaries, and/or through a remote repository:
+### Required Tools
+
+These can be brought in and installed using Zarf, as binaries, or through a remote repository:
 
 - k3d
 - kubectl
