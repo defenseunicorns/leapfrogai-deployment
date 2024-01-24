@@ -269,6 +269,12 @@ k3d cluster edit zarf-k3d --port-add "8080:30535@loadbalancer"
 k3d cluster start zarf-k3d
 ```
 
+### Usage
+
+Go to https://localhost:8080 to interact with LeapfrogAI UI
+
+Go to https://localhost:8080/leapfrogai-api/docs to see usage details for the LeapfrogAI API
+
 ### Stopping and Clean-up
 
 #### Stop K3d Cluster

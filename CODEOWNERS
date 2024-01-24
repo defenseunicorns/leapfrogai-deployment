@@ -1,0 +1,9 @@
+# Documentation and fallbacks for missed things
+* @defenseunicorns/leapfrogai
+
+# Core Code
+*.md @justinthelaw @collectiveunicorn
+
+# Additional privileged files
+/CODEOWNERS @jeff-mccoy @mikevanhemert @austenbryan @gerred
+/LICENSE @jeff-mccoy @austenbryan @gerred
