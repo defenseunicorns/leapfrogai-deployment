@@ -136,8 +136,6 @@ kubectl version
 
 #### Bootstrap K3d
 
-_Internet Access:_
-
 ```bash
 # download
 git clone https://github.com/defenseunicorns/zarf-package-k3d-airgap.git
@@ -208,17 +206,6 @@ zarf package create --confirm
 
 # install
 zarf package deploy zarf-package-whisper-*.tar.zst --confirm
-```
-
-#### (OPTIONAL) (DEPRECATED) CTransformers
-
-```bash
-# download
-git clone https://github.com/defenseunicorns/leapfrogai-backend-ctransformers.git
-cd leapfrogai-backend-ctransformers
-
-# create
-zarf package create --confirm
 ```
 
 #### (OPTIONAL) LLaMA CPP Python

@@ -1,7 +1,7 @@
 # LeapfrogAI Deployment Guide: NVIDIA GPUs
 
 > [!WARNING]  
-> GPU and CPU installation are very similar, so if you are installing with GPU support, bring the INSTALL-CPU.md as well, since all the instructions in this markdown only point out the steps that vary from the CPU instructions.
+> The GPU and CPU-only installation are very similar, so if you are installing with GPU support, bring the INSTALL-CPU.md as well, since all the instructions in this markdown only point out the steps and dependencies that vary from the CPU-only instructions.
 
 ## Table of Contents
 
@@ -15,84 +15,41 @@
 
 ### Host Dependencies
 
-These tools and packages should already be in your environment from the start:
-
 - nvidia-driver
 
 ### Required Tools
 
-These can be brought in and installed using Zarf, as binaries, or through a remote repository:
-
-- k3d (>= 1.27.x)
-- zarf (>= 0.30.x)
 - nvidia-container-toolkit (>=1.14.x)
 - nvidia-cuda-toolkit (>=12.2.x)
 
 ## Assumptions
 
-The following assumptions are being made for the writing of these installation steps:
-
-- User has a standard Unix-based operating system installed
-- User has root (`sudo su`) access
-  - Rootless mode details can be found here in [Docker's documentation](https://docs.docker.com/engine/security/rootless/)
 - Your NVIDIA GPU has the most up-to-date drivers installed
 - Your NVIDIA GPU drivers can handle CUDA >= 12.2
 
 ## Important Notes
 
+1. "N/A" will be used to denote that nothing changes from the CPU-only instructions, and those instructions should be referred to for that step.
+
+2. If there is a variation from the CPU-only instructions, then the command(s) and steps that are different will be described.
+
 ## Instructions
 
 ### Switch to Sudo
 
-```bash
-sudo su # login as required
-```
+N/A
 
 ### Install Tools
 
 #### Zarf
 
-_Internet Access:_
-
-```bash
-# installs latest version of Zarf
-brew install zarf
-```
-
-_Isolated Network:_
-
-```bash
-# download and store on removable media
-wget https://github.com/defenseunicorns/zarf/releases/download/v0.31.0/zarf_v0.31.0_Linux_amd64
-
-# upload from removable media and install
-mv zarf_v0.31.0_Linux_amd64 /usr/local/bin/zarf
-chmod +x /usr/local/bin/zarf
-
-# check
-zarf version
-```
+N/A
 
 #### Kubectl
 
 _Internet Access:_
 
-```bash
-apt install kubectl
-```
-
-_Isolated Network:_
-
-```bash
-# download and store on removable media
-wget https://dl.k8s.io/release/v1.28.3/bin/linux/amd64/kubectl
-
-# upload from removable media and install
-install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-
-# check
-kubectl version
-```
+N/A
 
 ### Deploy Kubernetes Cluster
 
@@ -101,89 +58,34 @@ kubectl version
 
 #### Bootstrap K3d
 
-_Internet Access:_
-
 ```bash
-# download
-git clone https://github.com/defenseunicorns/zarf-package-k3d-airgap.git
-cd zarf-package-k3d-airgap
-
-# create
-zarf package create --confirm
-
-zarf tools download-init
-
-cd metallb
-zarf package create --confirm
-
-# install
-cd ../ # if still in metallb folder
-mkdir temp && cd temp
-zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=false ../zarf-package-*.tar.zst
-
-cd ../
-zarf init --components git-server --confirm
-
-cd metallb
-zarf package deploy --confirm zarf-package-*.tar.zst
+# largest difference is setting `enable_gpus` to `true`
+zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=true ../zarf-package-*.tar.zst
 ```
 
 #### UDS DUBBD
 
-```bash
-# download
-git clone https://github.com/defenseunicorns/uds-package-dubbd.git
-cd uds-package-dubbd/k3d/
-
-# create
-docker login registry1.dso.mil # account creation is required
-zarf package create --confirm
-
-# install
-zarf package deploy --confirm zarf-package-*.tar.zst
-```
+N/A
 
 ### Deploy LeapfrogAI
 
 #### LeapfrogAI API
 
-```bash
-# download
-git clone https://github.com/defenseunicorns/leapfrogai-api.git
-cd leapfrogai-api/
-
-# create
-zarf package create --confirm
-
-# install
-zarf package deploy zarf-package-leapfrogai-api-*.zst
-# press "y" for prompt on deployment confirmation
-# press "y" for prompt to create and expose new ingress gateway
-```
+N/A
 
 #### (OPTIONAL) Whisper Model
 
+BEFORE `zarf package create --confirm`, you will need to perform a docker build:
+
 ```bash
-# download
-git clone https://github.com/defenseunicorns/leapfrogai-backend-whisper.git
-cd leapfrogai-backend-whisper
-
-# create
-zarf package create --confirm
-
-# install
-zarf package deploy zarf-package-whisper-*.tar.zst --confirm
+docker build -f Dockerfile.gpu -t ghcr.io/defenseunicorns/leapfrogai/whisper:0.0.1 .
 ```
 
-#### (OPTIONAL) (DEPRECATED) CTransformers
+The package deployment command also changes to this:
 
 ```bash
-# download
-git clone https://github.com/defenseunicorns/leapfrogai-backend-ctransformers.git
-cd leapfrogai-backend-ctransformers
-
-# create
-zarf package create --confirm
+# install
+zarf package deploy zarf-package-whisper-*.tar.zst --set GPU_ENABLED=true --confirm
 ```
 
 #### (OPTIONAL) LLaMA CPP Python
@@ -199,23 +101,7 @@ zarf package create --confirm
 
 #### (OPTIONAL) Leapfrog UI
 
-```bash
-# download
-git clone https://github.com/defenseunicorns/leapfrog-ui.git
-cd leapfrog-ui
-
-# create
-zarf package create --confirm
-
-# install
-cd leapfrog-ui
-zarf package deploy zarf-package-*.tar.zst
-# press "y" for prompt on deployment confirmation
-# press enter if you want to skip a prompted variable and keep the default
-# for "DOMAIN" prompt type your user facing url in this format "https://localhost:8080"
-# for "PREFIX" prompt, add your desired route prefixes or leave empty
-# for "MODEL" and "TRANSCRIPTION_MODEL", choose the name of the backend you deployed
-```
+N/A
 
 ### Setup Ingress/Egress
 
@@ -229,38 +115,7 @@ k3d cluster start zarf-k3d
 
 ### Stopping and Clean-up
 
-#### Stop K3d Cluster
-
-Do one of the following, with the K3d-based command being preferred:
-
-```bash
-k3d cluster stop zarf-k3d
-```
-
-```bash
-docker ps
-# grab the k3d cluster's container ID
-docker stop <K3D_CLUSTER_CONTAINER_ID>
-```
-
-#### Stop Zarf Registry
-
-```bash
-docker ps
-# grab the registry container ID
-docker stop <REGISTRY_CONTAINER_ID>
-```
-
-#### Clean-up
-
-> [!CAUTION]
-> This will remove EVERYTHING that is not attached to an active process
-
-```bash
-docker system prune -a -f && docker volume prune -f
-zarf tools clear-cache
-rm -rf /tmp/zarf-*
-```
+N/A
 
 ## Troubleshooting
 

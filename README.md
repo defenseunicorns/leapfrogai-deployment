@@ -24,13 +24,14 @@ Our goal for LeapfrogAI is to also simplify the Kubernetes-based deployment of L
   - [Hardware](#hardware)
   - [Architectures](#architectures)
 - [Issues and Features](#issues-and-features)
+- [Future Improvements](#future-improvements)
 
 ## Instructions
 
 The instructions are located in the [INSTALL-CPU.md]("./INSTALL-CPU.md") and [INSTALL-NVIDIA.md]("./INSTALL-NVIDIA.md"), where each markdown file contains an a detailed guide on how to install LeapfrogAI on systems that are CPU-only and contain both CPU and NVIDIA GPU(s), respectively.
 
 > [!IMPORTANT]  
-> GPU and CPU installation are very similar, so if you are installing with GPU support, bring the INSTALL-CPU.md as well, since all the GPU related instructions only point out the steps that vary from the CPU instructions.
+> The GPU and CPU-only installation are very similar, so if you are installing with GPU support, bring the INSTALL-CPU.md as well, since all the GPU related instructions only point out the steps and dependencies that vary from the CPU-only instructions.
 
 ## Tested Environments
 
@@ -68,3 +69,11 @@ In the future, our goal is to add instructions and test compatibility on other e
 ## Issues and Features
 
 If you have issues with installation or if you believe something is missing from the installation guides then please submit an issue using the default template.
+
+## Future Improvements
+
+- [ ] NVIDIA GPU images pushed directly to GHCR instead of local docker building
+- [ ] Zarf packages pushed directly to GHCR so cloning of the repositories is not required
+- [ ] Migration of these instructions over to our WIP LeapfrogAI documentation website
+- [ ] Use and explanation of [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/overview.html) for GPU instructions
+- [ ] Use of [UDS Core](https://github.com/defenseunicorns/uds-core) and [UDS CLI](https://github.com/defenseunicorns/uds-cli)
