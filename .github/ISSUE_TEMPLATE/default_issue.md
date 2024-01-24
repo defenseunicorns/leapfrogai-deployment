@@ -1,6 +1,6 @@
 ---
-name: Issue
-about: Create an issue to help us improve these installation guides
+name: Default Issue
+about: Create an issue to help us improve the installation guides
 title: ""
 labels: documentation
 assignees: ""

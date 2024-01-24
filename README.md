@@ -62,4 +62,4 @@ Below are some of the operating systems, architectures, and system specification
 
 ## Issues and Features
 
-If you have issues with installation or if you believe something is missing from the installation guides then please submit an [Issue]().
+If you have issues with installation or if you believe something is missing from the installation guides then please submit an issue using the default template.
