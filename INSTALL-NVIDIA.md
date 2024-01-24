@@ -60,10 +60,9 @@ N/A
 
 N/A
 
-#### NVIDIA
+### NVIDIA
 
-1. [Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation)
-2. [CUDA Toolkit]()
+See the footnotes and links related to the host dependencies and tools for NVIDIA.
 
 ### Deploy Kubernetes Cluster
 
