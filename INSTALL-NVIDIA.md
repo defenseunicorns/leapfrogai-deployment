@@ -15,12 +15,16 @@
 
 ### Host Dependencies
 
-- nvidia-driver
+- nvidia-driver[^1] (>=525.60)
+- nvidia-container-toolkit[^2] (>=1.14)
 
 ### Required Tools
 
-- nvidia-container-toolkit (>=1.14.x)
-- nvidia-cuda-toolkit (>=12.2.x)
+- nvidia-cuda-toolkit[^3] (>=12.2)
+
+[^1]: must be pre-installed on the system before being air-gapped, see [details here](https://linuxconfig.org/how-to-install-the-nvidia-drivers-on-ubuntu-22-04)
+[^2]: must be pre-installed on the system before being air-gapped, see [details here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation)
+[^3]: only required on the system building the Zarf packages and not necessarily on the system to be deployed to, see [details here](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
 
 ## Assumptions
 
@@ -32,6 +36,13 @@
 1. "N/A" will be used to denote that nothing changes from the CPU-only instructions, and those instructions should be referred to for that step.
 
 2. If there is a variation from the CPU-only instructions, then the command(s) and steps that are different will be described.
+
+3. By default, each backend is configured to request 1 GPU device
+
+   - At the moment, you cannot time-slice nor setup multi-instance GPU using these instructions
+   - Over scheduling GPU resources will cause your backend pods to crash
+   - To prevent crashing, install backends as CPU-only if you have filled up all your GPU devices already
+   - See the [README.md](./README.md) for more details on future improvement to these instructions
 
 ## Instructions
 
@@ -47,9 +58,12 @@ N/A
 
 #### Kubectl
 
-_Internet Access:_
-
 N/A
+
+#### NVIDIA
+
+1. [Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation)
+2. [CUDA Toolkit]()
 
 ### Deploy Kubernetes Cluster
 
@@ -61,6 +75,28 @@ N/A
 ```bash
 # largest difference is setting `enable_gpus` to `true`
 zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=true ../zarf-package-*.tar.zst
+```
+
+#### (OPTIONAL) GPU Support Test
+
+This helps confirm that the cluster's pods have access to GPU resources.
+
+```bash
+# download
+git clone https://github.com/justinthelaw/gpu-support-test
+cd gpu-support-test
+
+# create
+zarf package create --confirm
+
+# install
+zarf package deploy zarf-package-*.tar.zst
+# press "y" for prompt on deployment confirmation
+# enter the number of GPU(s) that are expected to be available when prompted RESOURCES_GPU and LIMITS_GPU
+
+# check
+zarf tools kubectl logs -n leapfrogai deployment/gpu-support-test
+# the logs should show that GPU(s) are accessible
 ```
 
 #### UDS DUBBD
@@ -75,7 +111,7 @@ N/A
 
 #### (OPTIONAL) Whisper Model
 
-BEFORE `zarf package create --confirm`, you will need to perform a docker build:
+Prior to `zarf package create --confirm`, you will need to perform a docker build:
 
 ```bash
 docker build -f Dockerfile.gpu -t ghcr.io/defenseunicorns/leapfrogai/whisper:0.0.1 .
@@ -85,18 +121,22 @@ The package deployment command also changes to this:
 
 ```bash
 # install
-zarf package deploy zarf-package-whisper-*.tar.zst --set GPU_ENABLED=true --confirm
+zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --confirm
 ```
 
 #### (OPTIONAL) LLaMA CPP Python
 
-```bash
-# download
-git clone https://github.com/defenseunicorns/leapfrogai-backend-llama-cpp-python.git
-cd leapfrogai-backend-llama-cpp-python
+Prior to `zarf package create --confirm`, you will need to perform a docker build:
 
-# create
-zarf package create --confirm
+```bash
+docker build -f Dockerfile.gpu -t ghcr.io/defenseunicorns/leapfrogai/llamacpp:0.0.1 .
+```
+
+The package deployment command also changes to this:
+
+```bash
+# install
+zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --confirm
 ```
 
 #### (OPTIONAL) Leapfrog UI

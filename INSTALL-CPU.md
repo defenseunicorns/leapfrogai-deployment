@@ -33,6 +33,7 @@ These can be brought in and installed using Zarf, as binaries, or through a remo
 The following assumptions are being made for the writing of these installation steps:
 
 - User has a standard Unix-based operating system installed
+  - Some commands may need to be modified depending on your CLI and package manager
 - User has root (`sudo su`) access
   - Rootless mode details can be found here in [Docker's documentation](https://docs.docker.com/engine/security/rootless/)
 
@@ -176,6 +177,28 @@ zarf package create --confirm
 zarf package deploy --confirm zarf-package-*.tar.zst
 ```
 
+#### Kyverno Configuration
+
+As of UDS DUBBD, v0.12+, a new Kyverno policy prevents some LeapfrogAI pods from running. As we work through some refactoring to overcome these policies, the following are instructions for temporarily changing the policy from `Enforce` to `Audit`.
+
+```bash
+# open the built-in k9s CLI tool
+zarf tools monitor
+# perform the following key presses and actions:
+#     press ":", a CLI should pop up
+#     type "kyverno", press "tab" to autocomplete, press "ENTER" to go to resource
+#     press "/", a search box should pop up,
+#     type "require-non-root-user", press "ENTER"
+#     press "E" to edit YAML
+#     press "/", a search box should pop up
+#     type "Enforce", press "ENTER"
+#     press "I" to enter insert mode
+#     change "Enforce" to "Audit"
+#     press "ESC", type ":wq", press "ENTER"
+#     press ":",  a CLI should pop up
+#     type "quit" to exist the tool
+```
+
 ### Deploy LeapfrogAI
 
 #### LeapfrogAI API
@@ -189,9 +212,9 @@ cd leapfrogai-api/
 zarf package create --confirm
 
 # install
-zarf package deploy zarf-package-leapfrogai-api-*.zst
-# press "y" for prompt on deployment confirmation
-# press "y" for prompt to create and expose new ingress gateway
+zarf package deploy zarf-package-*.zst --set ISTIO_ENABLED=true --set PREFIX=leapfrogai-api
+# if used without the `--confirm` flag, there are many prompted variables
+# please read the variable descriptions in the zarf.yaml for more details
 ```
 
 #### (OPTIONAL) Whisper Model
@@ -205,7 +228,7 @@ cd leapfrogai-backend-whisper
 zarf package create --confirm
 
 # install
-zarf package deploy zarf-package-whisper-*.tar.zst --confirm
+zarf package deploy zarf-package-*.tar.zst --confirm
 ```
 
 #### (OPTIONAL) LLaMA CPP Python
@@ -231,12 +254,9 @@ zarf package create --confirm
 
 # install
 cd leapfrog-ui
-zarf package deploy zarf-package-*.tar.zst
-# press "y" for prompt on deployment confirmation
-# press enter if you want to skip a prompted variable and keep the default
-# for "DOMAIN" prompt type your user facing url in this format "https://localhost:8080"
-# for "PREFIX" prompt, add your desired route prefixes or leave empty
-# for "MODEL" and "TRANSCRIPTION_MODEL", choose the name of the backend you deployed
+zarf package deploy zarf-package-*.tar.zst --confirm
+# if used without the `--confirm` flag, there are many prompted variables
+# please read the variable descriptions in the zarf.yaml for more details
 ```
 
 ### Setup Ingress/Egress

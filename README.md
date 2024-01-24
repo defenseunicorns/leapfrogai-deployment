@@ -28,7 +28,11 @@ Our goal for LeapfrogAI is to also simplify the Kubernetes-based deployment of L
 
 ## Instructions
 
-The instructions are located in the [INSTALL-CPU.md]("./INSTALL-CPU.md") and [INSTALL-NVIDIA.md]("./INSTALL-NVIDIA.md"), where each markdown file contains an a detailed guide on how to install LeapfrogAI on systems that are CPU-only and contain both CPU and NVIDIA GPU(s), respectively.
+The instructions are located in the following:
+
+1. [INSTALL-CPU.md]("./INSTALL-CPU.md"), base CPU-only installation instructions for installing everything on CPU and RAM
+
+2. [INSTALL-NVIDIA.md]("./INSTALL-NVIDIA.md"), superset of the CPU-only instructions for NVIDIA GPU vRAM offloading and acceleration
 
 > [!IMPORTANT]  
 > The GPU and CPU-only installation are very similar, so if you are installing with GPU support, bring the INSTALL-CPU.md as well, since all the GPU related instructions only point out the steps and dependencies that vary from the CPU-only instructions.
@@ -73,7 +77,10 @@ If you have issues with installation or if you believe something is missing from
 ## Future Improvements
 
 - [ ] NVIDIA GPU images pushed directly to GHCR instead of local docker building
-- [ ] Zarf packages pushed directly to GHCR so cloning of the repositories is not required
+- [ ] Zarf packages pushed directly to GHCR so that you only need to download the package instead of the source repository
+- [ ] Fix and remove the temporary Kyverno policy workaround
 - [ ] Migration of these instructions over to our WIP LeapfrogAI documentation website
-- [ ] Use and explanation of [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/overview.html) for GPU instructions
+- [ ] Use [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/overview.html) for GPU instructions
+- [ ] Eventually remove or completely refactor [zarf-package-k3d-airgap](https://github.com/defenseunicorns/zarf-package-k3d-airgap)
+- [ ] Move and officially adopt [gpu-support-test](https://github.com/justinthelaw/gpu-support-test) as a deployment tool and step
 - [ ] Use of [UDS Core](https://github.com/defenseunicorns/uds-core) and [UDS CLI](https://github.com/defenseunicorns/uds-cli)
