@@ -9,7 +9,7 @@ Visit the main [LeapfrogAI repository](https://github.com/defenseunicorns/leapfr
 
 ## Quickstart
 
-Don't know Kubernetes that well, or just want to get something working locally as quickly as possible? Then just go to the [Tadpole repository](https://github.com/defenseunicorns/tadpole) skip directly to a super-simplified Docker deployment using `docker compose`.
+Don't know Kubernetes that well, or just want to get something working locally as quickly as possible? Then just go to the [Tadpole repository](https://github.com/defenseunicorns/tadpole) and skip directly to a super-simplified Docker deployment using `docker compose`.
 
 > [!NOTE]  
 > Tadpole is only for local testing and development, and not meant for production. It also only presents a limited set of LeapfrogAI's capabilities.
@@ -30,9 +30,9 @@ Our goal for LeapfrogAI is to also simplify the Kubernetes-based deployment of L
 
 The instructions are located in the following:
 
-1. [INSTALL-CPU.md]("./INSTALL-CPU.md"), base CPU-only installation instructions for installing everything on CPU and RAM
+1. [INSTALL-CPU.md](./INSTALL-CPU.md), base CPU-only installation instructions for installing everything on CPU and RAM
 
-2. [INSTALL-NVIDIA.md]("./INSTALL-NVIDIA.md"), superset of the CPU-only instructions for NVIDIA GPU vRAM offloading and acceleration
+2. [INSTALL-NVIDIA.md](./INSTALL-NVIDIA.md), superset of the CPU-only instructions for NVIDIA GPU vRAM offloading and acceleration
 
 > [!IMPORTANT]  
 > The GPU and CPU-only installation are very similar, so if you are installing with GPU support, bring the INSTALL-CPU.md as well, since all the GPU related instructions only point out the steps and dependencies that vary from the CPU-only instructions.
