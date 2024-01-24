@@ -14,7 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CPU installation instruction set
 - GPU installation instruction set
 - Default Issue template
+- Default PR template
 - Changelog markdown file
+- Markdownlint configurations
 
 ### Fixed
 
