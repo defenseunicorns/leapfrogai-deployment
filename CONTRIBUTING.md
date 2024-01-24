@@ -8,6 +8,8 @@ Please download and install [VSCode Markdown Lint](https://github.com/DavidAnson
 
 All PRs must use the default PR template. Before a PR is reviewable, all PRs must have completed all the tasks on the PR template.
 
+PR commit titles should follow this convention: https://karma-runner.github.io/0.10/dev/git-commit-msg.html#allowed-type-values
+
 ## Issues
 
 All issues must use the default issue template.
