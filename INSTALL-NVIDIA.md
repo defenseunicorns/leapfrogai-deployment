@@ -46,20 +46,6 @@
 
 ## Instructions
 
-### Switch to Sudo
-
-N/A
-
-### Install Tools
-
-#### Zarf
-
-N/A
-
-#### Kubectl
-
-N/A
-
 ### NVIDIA
 
 See the footnotes and links related to the host dependencies and tools for NVIDIA.
@@ -102,16 +88,6 @@ zarf package remove gpu-support-test
 zarf tools registry prune --confirm
 ```
 
-#### UDS DUBBD
-
-N/A
-
-### Deploy LeapfrogAI
-
-#### LeapfrogAI API
-
-N/A
-
 #### (OPTIONAL) Whisper Model
 
 Prior to `zarf package create --confirm`, you will need to perform a docker build:
@@ -141,24 +117,6 @@ The package deployment command also changes to this:
 # install
 zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --confirm
 ```
-
-#### (OPTIONAL) Leapfrog UI
-
-N/A
-
-### Setup Ingress/Egress
-
-```bash
-k3d cluster edit zarf-k3d --port-add "443:30535@loadbalancer"
-k3d cluster edit zarf-k3d --port-add "8080:30535@loadbalancer"
-
-# if the load balancer does not restart
-k3d cluster start zarf-k3d
-```
-
-### Stopping and Clean-up
-
-N/A
 
 ## Troubleshooting
 
