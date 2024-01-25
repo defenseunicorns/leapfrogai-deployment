@@ -264,6 +264,17 @@ cd leapfrogai-backend-whisper # into leapfrogai-backend-whisper folder
 zarf package create --confirm
 ```
 
+#### (OPTIONAL) Llama-cpp-python
+
+```bash
+# download
+git clone https://github.com/defenseunicorns/leapfrogai-backend-llama-cpp-python.git
+cd leapfrogai-backend-llama-cpp-python
+
+# create
+zarf package create --confirm
+```
+
 #### (OPTIONAL) CTransformers
 
 ```bash
@@ -342,6 +353,14 @@ zarf package deploy zarf-package-leapfrogai-api-*.zst
 # install
 cd leapfrogai-backend-whisper # into leapfrogai-backend-whisper folder
 zarf package deploy zarf-package-whisper-*.tar.zst --confirm
+```
+
+#### (OPTIONAL) Deploy Llama-cpp-python
+
+```bash
+# install
+cd leapfrogai-backend-llama-cpp-python
+zarf package deploy zarf-package-llama-cpp-python-*.tar.zst --confirm
 ```
 
 #### (OPTIONAL) Deploy CTransformers
