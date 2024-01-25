@@ -91,7 +91,7 @@ These sub-stacks are not ready or not released yet.
 These should already be on your environment from the start:
 
 - jq
-- docker
+- docker*
 - build-essential
 - iptables
 - git
@@ -102,6 +102,12 @@ These will be brought in and installed using Zarf, as binaries, and/or through a
 - k3d
 - kubectl
 - zarf
+
+> *Make sure your user is added to the docker group
+```
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
 
 ## Installation
 
