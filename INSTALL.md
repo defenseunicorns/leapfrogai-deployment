@@ -286,21 +286,7 @@ zarf tools registry prune --confirm
 As of UDS DUBBD, v0.12+, a new Kyverno policy prevents some LeapfrogAI pods from running. As we work through some refactoring towards [Pepr](https://github.com/defenseunicorns/pepr), Kyverno's abstractive replacement, the following are instructions for temporarily changing the policy from `Enforce` to `Audit`.
 
 ```bash
-# open the built-in k9s CLI tool
-zarf tools monitor
-# perform the following key presses and actions:
-#     press ":", a CLI should pop up
-#     type "kyverno", press "tab" to autocomplete, press "ENTER" to go to resource
-#     press "/", a search box should pop up,
-#     type "require-non-root-user", press "ENTER"
-#     press "E" to edit YAML
-#     press "/", a search box should pop up
-#     type "Enforce", press "ENTER"
-#     press "I" to enter insert mode
-#     change "Enforce" to "Audit"
-#     press "ESC", type ":wq", press "ENTER"
-#     press ":",  a CLI should pop up
-#     type "quit" to exist the tool
+zarf tools kubectl patch clusterpolicy require-non-root-user --type='json' -p='[{"op": "replace", "path": "/spec/validationFailureAction", "value":"Audit"}]'
 ```
 
 ### Deploy LeapfrogAI
