@@ -24,24 +24,19 @@ Our goal for LeapfrogAI is to also simplify the Kubernetes-based deployment of L
   - [Hardware](#hardware)
   - [Architectures](#architectures)
 - [Issues and Features](#issues-and-features)
-- [Future Improvements](#future-improvements)
 
 ## Instructions
 
-The instructions are located in the following:
-
-1. [INSTALL-CPU.md](./INSTALL-CPU.md), base CPU-only installation instructions for installing everything on CPU and RAM
-
-2. [INSTALL-NVIDIA.md](./INSTALL-NVIDIA.md), superset of the CPU-only instructions for NVIDIA GPU vRAM offloading and acceleration
+The instructions are located in the [INSTALL.md](./INSTALL.md).
 
 > [!IMPORTANT]  
-> The GPU and CPU-only installation are very similar, so if you are installing with GPU support, bring the INSTALL-CPU.md as well, since all the GPU related instructions only point out the steps and dependencies that vary from the CPU-only instructions.
+> The GPU and CPU-only installation are very similar, so if you are installing with GPU support then take note of drop-downs that show a difference in deployment configuration.
 
 ## Tested Environments
 
 Below are some of the operating systems, architectures, and system specifications that we have tested our deployment instructions on.
 
-In the future, our goal is to add instructions and test compatibility on other environments, e.g., AMD GPU(s), Metal acceleration.
+In the future, our goal is to add instructions and test compatibility on other environments, e.g., ROCm, Metal, etc.
 
 > [!NOTE]  
 > The the speed and quality of LeapfrogAI and its hosted AI models depends heavily on the presence of a strong GPU to offload model layers to.
@@ -73,14 +68,3 @@ In the future, our goal is to add instructions and test compatibility on other e
 ## Issues and Features
 
 If you have issues with installation or if you believe something is missing from the installation guides then please submit an issue using the default template.
-
-## Future Improvements
-
-- [ ] NVIDIA GPU images pushed directly to GHCR instead of local docker building
-- [ ] Zarf packages pushed directly to GHCR so that you only need to download the package instead of the source repository
-- [ ] Fix and remove the temporary Kyverno policy workaround
-- [ ] Migration of these instructions over to our WIP LeapfrogAI documentation website
-- [ ] Use [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/overview.html) for GPU instructions
-- [ ] Eventually remove or completely refactor [zarf-package-k3d-airgap](https://github.com/defenseunicorns/zarf-package-k3d-airgap)
-- [ ] Move and officially adopt [gpu-support-test](https://github.com/justinthelaw/gpu-support-test) as a deployment tool and step
-- [ ] Use of [UDS Core](https://github.com/defenseunicorns/uds-core) and [UDS CLI](https://github.com/defenseunicorns/uds-cli)

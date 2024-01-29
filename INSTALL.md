@@ -1,5 +1,8 @@
 # LeapfrogAI Deployment Guide: CPU-only
 
+> [!IMPORTANT]  
+> The GPU variances from CPU-only installation are detailed within drop-downs named `GPU Variant`. The details located in the drop-down will detail whether they are additive or replacements to the existing sections' instructions.
+
 ## Table of Contents
 
 - [Preparations](#preparations)
@@ -21,12 +24,35 @@ These tools and packages should already be in your environment from the start:
 - git
 - procps
 
+<details>
+<summary>GPU Variant</summary>
+
+The additional are required for GPU deployments:
+
+- nvidia-driver[^1] (>=525.60)
+- nvidia-container-toolkit[^2] (>=1.14)
+
+</details>
+
 ### Required Tools
 
 These can be brought in and installed using Zarf, as binaries, or through a remote repository:
 
 - k3d (>= 1.27.x)
 - zarf (>= 0.30.x)
+
+<details>
+<summary>GPU Variant</summary>
+
+The additional are required for GPU deployments:
+
+- nvidia-cuda-toolkit[^3] (>= 12.2.x)
+
+</details>
+
+[^1]: see [details here](https://linuxconfig.org/how-to-install-the-nvidia-drivers-on-ubuntu-22-04)
+[^2]: see [details here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation)
+[^3]: only required on the system building the Zarf packages, see [details here](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
 
 ## Assumptions
 
@@ -36,6 +62,17 @@ The following assumptions are being made for the writing of these installation s
   - Some commands may need to be modified depending on your CLI and package manager
 - User has root (`sudo su`) access
   - Rootless mode details can be found here in [Docker's documentation](https://docs.docker.com/engine/security/rootless/)
+
+<details>
+<summary>GPU Variant</summary>
+
+The additional are required for GPU deployments:
+
+- Your NVIDIA GPU has the most up-to-date drivers installed
+  - Your NVIDIA GPU drivers can handle CUDA >= 12.2
+- NVIDIA Container Toolkit is available via internet access, pre-installed, or on a mirrored package repository in the air-gap
+
+</details>
 
 ## Important Notes
 
@@ -75,6 +112,20 @@ docker tag ghcr.io/defenseunicorns/leapfrogai/whisper:0.4.0 localhost:5000/defen
 docker push localhost:5000/defenseunicorns/leapfrogai/whisper:0.4.0
 zarf package create --registry-override ghcr.io=localhost:5000 --set IMG=defenseunicorns/leapfrogai/whisper:0.4.0
 ```
+
+<details>
+<summary>GPU Variant</summary>
+
+The additional are required for GPU deployments:
+
+8. By default, each backend is configured to request 1 GPU device
+
+   - At the moment, you cannot time-slice nor setup multi-instance GPU using these instructions
+   - Over scheduling GPU resources will cause your backend pods to crash
+   - To prevent crashing, install backends as CPU-only if you have filled up all your GPU devices already
+   - See the [README.md](./README.md) for more details on future improvement to these instructions
+
+</details>
 
 ## Instructions
 
@@ -149,8 +200,10 @@ zarf tools download-init
 
 cd metallb
 zarf package create --confirm
+```
 
-# install
+```bash
+# deploy
 cd ../ # if still in metallb folder
 mkdir temp && cd temp
 zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=false ../zarf-package-*.tar.zst
@@ -161,6 +214,26 @@ zarf init --components git-server --confirm
 cd metallb
 zarf package deploy --confirm zarf-package-*.tar.zst
 ```
+
+<details>
+<summary>GPU Variant</summary>
+
+The following changes are required for GPU deployments:
+
+```bash
+cd ../ # if still in metallb folder
+mkdir temp && cd temp
+# largest difference is setting `enable_gpus` to `true`
+zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=true ../zarf-package-*.tar.zst
+
+cd ../
+zarf init --components git-server --confirm
+
+cd metallb
+zarf package deploy --confirm zarf-package-*.tar.zst
+```
+
+</details>
 
 #### UDS DUBBD
 
@@ -177,9 +250,40 @@ zarf package create --confirm
 zarf package deploy --confirm zarf-package-*.tar.zst
 ```
 
+#### (OPTIONAL) GPU Support Test
+
+<details>
+<summary>GPU Variant</summary>
+
+The following is an optional addition for GPU deployments and helps confirm that the cluster's pods have access to expected GPU resources:
+
+```bash
+# download
+git clone https://github.com/defenseunicorns/leapfrogai-gpu-support-test
+cd leapfrogai-gpu-support-test
+
+# create
+zarf package create --confirm
+
+# install
+zarf package deploy zarf-package-*.tar.zst
+# press "y" for prompt on deployment confirmation
+# enter the number of GPU(s) that are expected to be available when prompted RESOURCES_GPU and LIMITS_GPU
+
+# check
+zarf tools kubectl logs -n leapfrogai deployment/gpu-support-test
+# the logs should show that all expected GPU(s) are accessible
+
+# clean-up
+zarf package remove gpu-support-test
+zarf tools registry prune --confirm
+```
+
+</details>
+
 #### Kyverno Configuration
 
-As of UDS DUBBD, v0.12+, a new Kyverno policy prevents some LeapfrogAI pods from running. As we work through some refactoring to overcome these policies, the following are instructions for temporarily changing the policy from `Enforce` to `Audit`.
+As of UDS DUBBD, v0.12+, a new Kyverno policy prevents some LeapfrogAI pods from running. As we work through some refactoring towards [Pepr](https://github.com/defenseunicorns/pepr), Kyverno's abstractive replacement, the following are instructions for temporarily changing the policy from `Enforce` to `Audit`.
 
 ```bash
 # open the built-in k9s CLI tool
@@ -231,6 +335,24 @@ zarf package create --confirm
 zarf package deploy zarf-package-*.tar.zst --confirm
 ```
 
+<details>
+<summary>GPU Variant</summary>
+
+For the time being, prior to `zarf package create --confirm`, you will need to perform a docker build:
+
+```bash
+docker build -f Dockerfile.gpu -t ghcr.io/defenseunicorns/leapfrogai/whisper:0.0.1 .
+```
+
+The package deployment command also changes to this:
+
+```bash
+# install
+zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --confirm
+```
+
+</details>
+
 #### (OPTIONAL) LLaMA CPP Python
 
 ```bash
@@ -241,6 +363,24 @@ cd leapfrogai-backend-llama-cpp-python
 # create
 zarf package create --confirm
 ```
+
+<details>
+<summary>GPU Variant</summary>
+
+Prior to `zarf package create --confirm`, you will need to perform a docker build:
+
+```bash
+docker build -f Dockerfile.gpu -t ghcr.io/defenseunicorns/leapfrogai/llamacpp:0.0.1 .
+```
+
+The package deployment command also changes to this:
+
+```bash
+# install
+zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --confirm
+```
+
+</details>
 
 #### (OPTIONAL) Leapfrog UI
 
@@ -365,3 +505,7 @@ ls -la /var/lib/docker
 ```
 
 In addition to your PWD, those paths are the usual suspects for taking up too much space. You may need to perform manual clean-up, or provision more space for the disks or mounts that these live in.
+
+### GPU Acceleration Issues
+
+Please visit and read the contents of the [`gpu-support-test` repository](https://github.com/defenseunicorns/leapfrogai-gpu-support-test/tree/main?tab=readme-ov-file#troubleshooting) if you are running into issues regarding GPU access for Docker containers or Kubernetes clusters' pods.
