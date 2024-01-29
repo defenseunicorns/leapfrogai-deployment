@@ -1,7 +1,7 @@
-# LeapfrogAI Deployment Guide: CPU-only
+# LeapfrogAI Deployment Guide
 
 > [!IMPORTANT]  
-> The GPU variances from CPU-only installation are detailed within drop-downs named `GPU Variant`. The details located in the drop-down will detail whether they are additive or replacements to the existing sections' instructions.
+> The GPU variances from CPU-only installation are detailed within drop-downs named **GPU Variant**. The details located in the drop-down will detail whether they are additive or replacements to the existing sections' instructions.
 
 ## Table of Contents
 
@@ -25,7 +25,9 @@ These tools and packages should already be in your environment from the start:
 - procps
 
 <details>
-<summary>GPU Variant</summary>
+<summary><b>GPU Variant</b></summary>
+
+<br/>
 
 The additional are required for GPU deployments:
 
@@ -42,7 +44,9 @@ These can be brought in and installed using Zarf, as binaries, or through a remo
 - zarf (>= 0.30.x)
 
 <details>
-<summary>GPU Variant</summary>
+<summary><b>GPU Variant</b></summary>
+
+<br/>
 
 The additional are required for GPU deployments:
 
@@ -64,7 +68,9 @@ The following assumptions are being made for the writing of these installation s
   - Rootless mode details can be found here in [Docker's documentation](https://docs.docker.com/engine/security/rootless/)
 
 <details>
-<summary>GPU Variant</summary>
+<summary><b>GPU Variant</b></summary>
+
+<br/>
 
 The additional are required for GPU deployments:
 
@@ -114,7 +120,9 @@ zarf package create --registry-override ghcr.io=localhost:5000 --set IMG=defense
 ```
 
 <details>
-<summary>GPU Variant</summary>
+<summary><b>GPU Variant</b></summary>
+
+<br/>
 
 The additional are required for GPU deployments:
 
@@ -202,26 +210,17 @@ cd metallb
 zarf package create --confirm
 ```
 
-```bash
-# deploy
-cd ../ # if still in metallb folder
-mkdir temp && cd temp
-zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=false ../zarf-package-*.tar.zst
-
-cd ../
-zarf init --components git-server --confirm
-
-cd metallb
-zarf package deploy --confirm zarf-package-*.tar.zst
-```
-
 <details>
-<summary>GPU Variant</summary>
+<summary><b>GPU Variant</b></summary>
+
+<br/>
 
 The following changes are required for GPU deployments:
 
 ```bash
+# deploy
 cd ../ # if still in metallb folder
+# temp folder to catch extra files generated during deploy
 mkdir temp && cd temp
 # largest difference is setting `enable_gpus` to `true`
 zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=true ../zarf-package-*.tar.zst
@@ -234,6 +233,19 @@ zarf package deploy --confirm zarf-package-*.tar.zst
 ```
 
 </details>
+
+```bash
+# deploy
+cd ../ # if still in metallb folder
+mkdir temp && cd temp
+zarf package deploy --set enable_traefik=false --set enable_service_lb=true --set enable_metrics_server=false --set enable_gpus=false ../zarf-package-*.tar.zst
+
+cd ../
+zarf init --components git-server --confirm
+
+cd metallb
+zarf package deploy --confirm zarf-package-*.tar.zst
+```
 
 #### UDS DUBBD
 
@@ -253,7 +265,9 @@ zarf package deploy --confirm zarf-package-*.tar.zst
 #### (OPTIONAL) GPU Support Test
 
 <details>
-<summary>GPU Variant</summary>
+<summary><b>GPU Variant</b></summary>
+
+<br/>
 
 The following is an optional addition for GPU deployments and helps confirm that the cluster's pods have access to expected GPU resources:
 
@@ -309,6 +323,8 @@ zarf package deploy zarf-package-*.zst --set ISTIO_ENABLED=true --set PREFIX=lea
 
 #### (OPTIONAL) Whisper Model
 
+This backend comes pre-packaged with whisper-base (english-only), and faster-whisper as the inferencing engine.
+
 ```bash
 # download
 git clone https://github.com/defenseunicorns/leapfrogai-backend-whisper.git
@@ -322,7 +338,9 @@ zarf package deploy zarf-package-*.tar.zst --confirm
 ```
 
 <details>
-<summary>GPU Variant</summary>
+<summary><b>GPU Variant</b></summary>
+
+<br/>
 
 For the time being, prior to `zarf package create --confirm`, you will need to perform a docker build:
 
@@ -341,6 +359,8 @@ zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --confirm
 
 #### (OPTIONAL) LLaMA CPP Python
 
+This backend comes pre-packaged with synthia-7b-v2.0.Q4_K_M, and llama-cpp-python as the inferencing engine.
+
 ```bash
 # download
 git clone https://github.com/defenseunicorns/leapfrogai-backend-llama-cpp-python.git
@@ -351,7 +371,9 @@ zarf package create --confirm
 ```
 
 <details>
-<summary>GPU Variant</summary>
+<summary><b>GPU Variant</b></summary>
+
+<br/>
 
 Prior to `zarf package create --confirm`, you will need to perform a docker build:
 
