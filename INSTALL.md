@@ -135,14 +135,14 @@ The additional are required for GPU deployments:
 sudo su # login as required
 ```
 
-### Install Tools
+### deploy Tools
 
 #### Zarf
 
 _Internet Access:_
 
 ```bash
-# installs latest version of Zarf
+# deploys latest version of Zarf
 brew install zarf
 ```
 
@@ -246,7 +246,7 @@ cd uds-package-dubbd/k3d/
 docker login registry1.dso.mil # account creation is required
 zarf package create --confirm
 
-# install
+# deploy
 zarf package deploy --confirm zarf-package-*.tar.zst
 ```
 
@@ -265,7 +265,7 @@ cd leapfrogai-gpu-support-test
 # create
 zarf package create --confirm
 
-# install
+# deploy
 zarf package deploy zarf-package-*.tar.zst
 # press "y" for prompt on deployment confirmation
 # enter the number of GPU(s) that are expected to be available when prompted RESOURCES_GPU and LIMITS_GPU
@@ -301,7 +301,7 @@ cd leapfrogai-api/
 # create
 zarf package create --confirm
 
-# install
+# deploy
 zarf package deploy zarf-package-*.zst --set ISTIO_ENABLED=true --set PREFIX=leapfrogai-api
 # if used without the `--confirm` flag, there are many prompted variables
 # please read the variable descriptions in the zarf.yaml for more details
@@ -317,7 +317,7 @@ cd leapfrogai-backend-whisper
 # create
 zarf package create --confirm
 
-# install
+# deploy
 zarf package deploy zarf-package-*.tar.zst --confirm
 ```
 
@@ -333,7 +333,7 @@ docker build -f Dockerfile.gpu -t ghcr.io/defenseunicorns/leapfrogai/whisper:0.0
 The package deployment command also changes to this:
 
 ```bash
-# install
+# deploy
 zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --confirm
 ```
 
@@ -362,7 +362,7 @@ docker build -f Dockerfile.gpu -t ghcr.io/defenseunicorns/leapfrogai/llamacpp:0.
 The package deployment command also changes to this:
 
 ```bash
-# install
+# deploy
 zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --confirm
 ```
 
@@ -378,7 +378,7 @@ cd leapfrog-ui
 # create
 zarf package create --confirm
 
-# install
+# deploy
 cd leapfrog-ui
 zarf package deploy zarf-package-*.tar.zst --confirm
 # if used without the `--confirm` flag, there are many prompted variables
