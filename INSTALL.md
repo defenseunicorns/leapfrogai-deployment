@@ -217,6 +217,8 @@ zarf package create --confirm
 
 The following changes are required for GPU deployments:
 
+Use [this branch](https://github.com/defenseunicorns/zarf-package-k3d-airgap/tree/updated-k3s-cuda-base-support) instead of the `main`, until it is merged into main.
+
 ```bash
 # deploy
 cd ../ # if still in metallb folder
@@ -273,7 +275,7 @@ The following is an optional addition for GPU deployments and helps confirm that
 
 ```bash
 # download
-git clone https://github.com/defenseunicorns/leapfrogai-gpu-support-test
+git clone https://github.com/justinthelaw/gpu-support-test
 cd leapfrogai-gpu-support-test
 
 # create
