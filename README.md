@@ -1,9 +1,9 @@
 # LeapfrogAI Deployment Guide
 
 > [!WARNING]  
-> The instructions in this repository require knowledge of Docker, Unix-based CLIs, GPU computing, and Kubernetes.
+> The instructions in this repository require familiarity of Docker, Kubernetes, Unix-based CLIs, and GPU computing.
 
-This repository contains documentation for deploying LeapfrogAI. LeapfrogAI an AI-as-a-service (AaaS) platform that brings the various capabilities and modalities of AI models to any environment, from cloud-based deployments to ingress/egress-limited servers. LeapfrogAI allows teams to deploy APIs that shadow OpenAI's API specification, enabling end-users and developers to build and use tools for almost any model and code library on the market All of this is done on your local machine, environment, etc., allowing the user to keep their information and sensitive data secure in their own environment.
+This repository contains documentation for deploying LeapfrogAI. LeapfrogAI an AI-as-a-service (AaaS) platform that brings the various capabilities and modalities of AI models to any environment, from cloud-based deployments to ingress/egress-limited servers. LeapfrogAI allows teams to deploy APIs that shadow OpenAI's API specification, enabling end-users and developers to build and use tools for almost any model and code library on the market. All of this is done on your local machine, environment, etc., allowing the user to keep their information and sensitive data secure in their own environment.
 
 Visit the main [LeapfrogAI repository](https://github.com/defenseunicorns/leapfrogai) for more details.
 
