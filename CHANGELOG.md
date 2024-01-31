@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.0.1] - 2024-01-24
+## [0.1.0] - 2024-01-31
 
 ### Added
 
@@ -30,5 +30,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed CTransformers instructions
 
-[unreleased]: https://github.com/defenseunicorns/leapfrogai-deployment/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/defenseunicorns/leapfrogai-deployment/releases/tag/v0.0.1
+[unreleased]: https://github.com/defenseunicorns/leapfrogai-deployment/compare/v0.1.0...HEAD
+[0.0.1]: https://github.com/defenseunicorns/leapfrogai-deployment/releases/tag/v0.1.0
