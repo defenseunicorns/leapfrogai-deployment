@@ -315,7 +315,7 @@ cd leapfrogai-api/
 zarf package create --confirm
 
 # deploy
-zarf package deploy zarf-package-*.zst --set ISTIO_ENABLED=true --set ISTIO_INJECTION=enabled --set DOMAIN="*" --confirm
+zarf package deploy zarf-package-*.zst --set ISTIO_ENABLED=true --set ISTIO_INJECTION=enabled --confirm
 # if used without the `--confirm` flag, there are many prompted variables
 # please read the variable descriptions in the zarf.yaml for more details
 
