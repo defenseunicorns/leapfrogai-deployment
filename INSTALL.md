@@ -284,11 +284,7 @@ zarf package create --confirm
 # deploy
 zarf package deploy zarf-package-*.tar.zst
 # press "y" for prompt on deployment confirmation
-# enter the number of GPU(s) that are expected to be available when prompted RESOURCES_GPU and LIMITS_GPU
-
-# check
-zarf tools kubectl logs -n leapfrogai deployment/gpu-support-test
-# the logs should show that all expected GPU(s) are accessible
+# enter the number of GPU(s) that are expected to be available when prompted
 
 # clean-up
 zarf package remove gpu-support-test
@@ -303,6 +299,7 @@ As of UDS DUBBD, v0.12+, a new Kyverno policy prevents some LeapfrogAI pods from
 
 ```bash
 zarf tools kubectl patch clusterpolicy require-non-root-user --type='json' -p='[{"op": "replace", "path": "/spec/validationFailureAction", "value":"Audit"}]'
+zarf tools kubectl patch clusterpolicy require-non-root-group --type='json' -p='[{"op": "replace", "path": "/spec/validationFailureAction", "value":"Audit"}]'
 ```
 
 ### Deploy LeapfrogAI
