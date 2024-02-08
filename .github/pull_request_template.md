@@ -1,11 +1,11 @@
 ## Description
 
+...
+
 ## Related Issue
 
 Fixes #
-
 <!-- or -->
-
 Relates to #
 
 ## Type of change
@@ -16,6 +16,5 @@ Relates to #
 
 ## Checklist before merging
 
-- [ ] Read and understand the `CONTRIBUTING.md`
-- [ ] Resolve all markdown lint issues
-- [ ] Added updates to the Changelog
+- [ ] Test, docs, adr added or updated as needed
+- [ ] [Contributor Guide Steps](https://github.com/defenseunicorns/leapfrogai-deployment/blob/main/CONTRIBUTING.md) followed

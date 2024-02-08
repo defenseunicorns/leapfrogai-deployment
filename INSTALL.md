@@ -374,9 +374,35 @@ zarf tools kubectl patch virtualservice leapfrogai -n leapfrogai --type='json' -
 ]'
 ```
 
-#### (OPTIONAL) Whisper Model
+#### (OPTIONAL) Text Embedding Model
 
-This backend comes pre-packaged with whisper-base (english-only), and faster-whisper as the inferencing engine.
+```bash
+# download
+git clone https://github.com/defenseunicorns/leapfrogai-backend-text-embedding.git
+cd leapfrogai-backend-text-embedding
+
+# create
+zarf package create --confirm
+
+# deploy
+zarf package deploy zarf-package-*.tar.zst --confirm
+```
+
+<details>
+<summary><b>GPU Variant</b></summary>
+
+<br/>
+
+Change the GPU request and limit as required. The package creation and deployment command also changes to this:
+
+```bash
+# create
+zarf package create --confirm
+# deploy
+zarf package deploy --set GPU_ENABLED=true --set REQUESTS_GPU=1 --set LIMITS_GPU=1 --confirm
+```
+
+#### (OPTIONAL) Whisper Model
 
 ```bash
 # download
@@ -395,24 +421,18 @@ zarf package deploy zarf-package-*.tar.zst --confirm
 
 <br/>
 
-For the time being, prior to `zarf package create --confirm`, you will need to perform a docker build:
+Change the GPU request and limit as required. The package creation and deployment command also changes to this:
 
 ```bash
-docker build -f Dockerfile.gpu -t ghcr.io/defenseunicorns/leapfrogai/whisper:0.0.1 .
-```
-
-The package deployment command also changes to this:
-
-```bash
+# create
+zarf package create --confirm
 # deploy
-zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --confirm
+zarf package deploy --set GPU_ENABLED=true --set REQUESTS_GPU=1 --set LIMITS_GPU=1 --confirm
 ```
 
 </details>
 
 #### (OPTIONAL) LLaMA CPP Python
-
-This backend comes pre-packaged with synthia-7b-v2.0.Q4_K_M, and llama-cpp-python as the inferencing engine.
 
 ```bash
 # download
@@ -420,7 +440,9 @@ git clone https://github.com/defenseunicorns/leapfrogai-backend-llama-cpp-python
 cd leapfrogai-backend-llama-cpp-python
 
 # create
-zarf package create --confirm
+zarf package create --set IMAGE_REPOSITORY=ghcr.io/defenseunicorns/leapfrogai/llama-cpp-python-gpu --confirm
+# deploy
+zarf package deploy --set GPU_ENABLED=true --set REQUESTS_GPU=1 --set LIMITS_GPU=1 --confirm
 ```
 
 <details>
@@ -428,17 +450,13 @@ zarf package create --confirm
 
 <br/>
 
-Prior to `zarf package create --confirm`, you will need to perform a docker build:
+Change the GPU request and limit as required. The package creation and deployment command also changes to this:
 
 ```bash
-docker build -f Dockerfile.gpu -t ghcr.io/defenseunicorns/leapfrogai/llamacpp:0.0.1 .
-```
-
-The package deployment command also changes to this:
-
-```bash
+# create
+zarf package create --confirm
 # deploy
-zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --confirm
+zarf package deploy --set GPU_ENABLED=true --set REQUESTS_GPU=1 --set LIMITS_GPU=1 --confirm
 ```
 
 </details>
