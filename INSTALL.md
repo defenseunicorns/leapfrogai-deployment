@@ -393,11 +393,13 @@ zarf package deploy zarf-package-*.tar.zst --confirm
 
 <br/>
 
-Change the GPU request and limit as required. The package deployment command also changes to this:
+Change the GPU request and limit as required. The package creation and deployment command also changes to this:
 
 ```bash
+# create
+zarf package create --confirm
 # deploy
-zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --set REQUESTs_GPU=1 --set LIMITS_GPU=1 --confirm
+zarf package deploy --set GPU_ENABLED=true --set REQUESTS_GPU=1 --set LIMITS_GPU=1 --confirm
 ```
 
 #### (OPTIONAL) Whisper Model
@@ -419,11 +421,13 @@ zarf package deploy zarf-package-*.tar.zst --confirm
 
 <br/>
 
-Change the GPU request and limit as required. The package deployment command also changes to this:
+Change the GPU request and limit as required. The package creation and deployment command also changes to this:
 
 ```bash
+# create
+zarf package create --confirm
 # deploy
-zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --set REQUESTs_GPU=1 --set LIMITS_GPU=1 --confirm
+zarf package deploy --set GPU_ENABLED=true --set REQUESTS_GPU=1 --set LIMITS_GPU=1 --confirm
 ```
 
 </details>
@@ -436,7 +440,9 @@ git clone https://github.com/defenseunicorns/leapfrogai-backend-llama-cpp-python
 cd leapfrogai-backend-llama-cpp-python
 
 # create
-zarf package create --confirm
+zarf package create --set IMAGE_REPOSITORY=ghcr.io/defenseunicorns/leapfrogai/llama-cpp-python-gpu --confirm
+# deploy
+zarf package deploy --set GPU_ENABLED=true --set REQUESTS_GPU=1 --set LIMITS_GPU=1 --confirm
 ```
 
 <details>
@@ -444,11 +450,13 @@ zarf package create --confirm
 
 <br/>
 
-Change the GPU request and limit as required. The package deployment command also changes to this:
+Change the GPU request and limit as required. The package creation and deployment command also changes to this:
 
 ```bash
+# create
+zarf package create --confirm
 # deploy
-zarf package deploy zarf-package-*.tar.zst --set GPU_ENABLED=true --set REQUESTs_GPU=1 --set LIMITS_GPU=1 --confirm
+zarf package deploy --set GPU_ENABLED=true --set REQUESTS_GPU=1 --set LIMITS_GPU=1 --confirm
 ```
 
 </details>
