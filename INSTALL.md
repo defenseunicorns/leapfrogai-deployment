@@ -113,10 +113,10 @@ zarf package create zarf-package-<NAME_OF_PACKAGE>-*.tar.zst
 
 ```bash
 docker run -d -p 5000:5000 --restart=always --name registry registry:2
-docker build -t ghcr.io/defenseunicorns/leapfrogai/whisper:0.4.0 .
-docker tag ghcr.io/defenseunicorns/leapfrogai/whisper:0.4.0 localhost:5000/defenseunicorns/leapfrogai/whisper:0.4.0
-docker push localhost:5000/defenseunicorns/leapfrogai/whisper:0.4.0
-zarf package create --registry-override ghcr.io=localhost:5000 --set IMG=defenseunicorns/leapfrogai/whisper:0.4.0
+docker build -t ghcr.io/defenseunicorns/leapfrogai/whisper:0.5.0 .
+docker tag ghcr.io/defenseunicorns/leapfrogai/whisper:0.5.0 localhost:5000/defenseunicorns/leapfrogai/whisper:0.5.0
+docker push localhost:5000/defenseunicorns/leapfrogai/whisper:0.5.0
+zarf package create --registry-override ghcr.io=localhost:5000 --set IMG=defenseunicorns/leapfrogai/whisper:0.5.0
 ```
 
 <details>
