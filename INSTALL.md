@@ -158,10 +158,10 @@ _Isolated Network:_
 
 ```bash
 # download and store on removable media
-wget https://github.com/defenseunicorns/zarf/releases/download/v0.31.0/zarf_v0.31.0_Linux_amd64
+wget https://github.com/defenseunicorns/zarf/releases/download/v0.32.3/zarf_v0.32.3_Linux_amd64
 
 # upload from removable media and install
-mv zarf_v0.31.0_Linux_amd64 /usr/local/bin/zarf
+mv zarf_v0.32.3_Linux_amd64 /usr/local/bin/zarf
 chmod +x /usr/local/bin/zarf
 
 # check
@@ -216,8 +216,6 @@ zarf package create --confirm
 <br/>
 
 The following changes are required for GPU deployments:
-
-Use [this branch](https://github.com/defenseunicorns/zarf-package-k3d-airgap/tree/updated-k3s-cuda-base-support) instead of the `main`, until it is merged into main.
 
 ```bash
 # deploy
@@ -395,13 +393,7 @@ zarf package deploy zarf-package-*.tar.zst --confirm
 
 <br/>
 
-For the time being, prior to `zarf package create --confirm`, you will need to perform a docker build:
-
-```bash
-docker build -f Dockerfile.gpu -t ghcr.io/defenseunicorns/leapfrogai/whisper:0.0.1 .
-```
-
-The package deployment command also changes to this:
+The package deployment command changes slightly to provide GPU:
 
 ```bash
 # deploy
@@ -428,13 +420,7 @@ zarf package create --confirm
 
 <br/>
 
-Prior to `zarf package create --confirm`, you will need to perform a docker build:
-
-```bash
-docker build -f Dockerfile.gpu -t ghcr.io/defenseunicorns/leapfrogai/llamacpp:0.0.1 .
-```
-
-The package deployment command also changes to this:
+The package deployment command changes slightly to provide GPU:
 
 ```bash
 # deploy
