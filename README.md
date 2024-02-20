@@ -1,3 +1,6 @@
+> [!WARNING]
+> As of 20 February 2024, This repository has migrated to the main [LeapfrogAI Docs](https://github.com/defenseunicorns/leapfrogai-docs) repository.
+
 # LeapfrogAI Deployment Guide
 
 > [!WARNING]  
